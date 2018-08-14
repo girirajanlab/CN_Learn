@@ -1,0 +1,64 @@
+################################################################################
+# Script : config.params                                                       #
+# Author : Vijay Kumar                                                         #
+# Date   : 7/25/2018                                                           # 
+# This file is the master repository for the list of directories, files and    #
+# other global values and parameters used throughout the project. i.e., they   #
+# are shared across multiple scripts. The intent is to maintain such shared    #
+# variables in a single place and source this file within each bash scripts    #
+################################################################################
+# 1) Main Directories
+#####################
+PROJ_DIR='/data/CN_Learn/'
+SCRIPTS_DIR=${PROJ_DIR}'scripts/'
+SOURCE_DIR=${PROJ_DIR}'source/'
+DATA_DIR=${PROJ_DIR}'data/'
+DATA_BPCOV_DIR=${DATA_DIR}'bp_level_coverage/'
+DATA_BPCOV_DIR='/data2/RF_Model_SVIP/data/extract/bp_level_coverage/'
+
+###################
+# 2) Subdirectories 
+###################
+PRED_DIR=${DATA_DIR}'PRED_DIR/'
+VALD_DIR=${DATA_DIR}'VALD_DIR/'
+
+#######################
+# 3) Source directories
+#######################
+BAM_DIR='/data2/SVIP/WES-decrypted/'           
+REF_GENOME_DIR='/data/bx_references/GRCh37/'
+
+###################
+# 4) Software Tools
+###################
+GATK_SW_DIR='/data/software/gatk/gatk-3.5/'
+BEDTOOLS_DIR='/data/software/bedtools2/bin/'
+SAMTOOLS_DIR='/data/software/samtools-1.3.1/'
+PLINK_DIR='/data/software/plinkseq-0.10/'
+
+###############
+# 5) File Names
+###############
+REF_GENOME='/data/bx_references/GRCh37/human_g1k_v37.fasta'
+BAM_LIST=${SOURCE_DIR}'list_of_bam_with_fullpath'
+SAMPLE_LIST=${SOURCE_DIR}'sample_list.txt'
+SAMPLE_LIST_TRAIN=${SOURCE_DIR}'sample_list_train.txt'
+SAMPLE_LIST_TEST=${SOURCE_DIR}'sample_list_test.txt'
+TARGET_PROBES=${SOURCE_DIR}'targets_auto_no_chr.bed'
+VAL_DATA_FILE=${SOURCE_DIR}'validated_cnvs.txt'
+
+################################
+# 6) Global Variables/Parameters
+################################
+CALLER_LIST="CANOES CLAMMS CODEX XHMM"
+CALLER_COUNT=`echo ${CALLER_LIST} | wc -w`
+##########################################################################
+# This threshold is used to label CNVs in training data as True Vs. False
+##########################################################################
+VALDATA_OV_THRESHOLD=0.1
+################################################################################
+# The following parameter is used to choose the classifier to be built by 
+# CN-Learn. Default = RF (Random Forest) 
+# Other possible values = LR (Logistic Regression); SVM (Support Vector Machine)
+################################################################################
+CLASSIFIER='RF'
