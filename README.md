@@ -22,7 +22,7 @@ All the scripts required to run CN-Learn are provided in the ‘scripts’ direc
 ## config.params 
 In order to make the workflow/scripts easy to read and execute, several commonly used parameters, directory names and file paths are maintained in a single parameter file named ‘config.params’. This file is located in the main project folder and sourced into each bash script using the ‘source’ command. 
 
-NOTE: Since the config.params file is sourced into every script using hard-coded full path, the ‘source’ command in every bash script **MUST*** be updated with the full local path.
+NOTE: Since the config.params file is sourced into every script using hard-coded full path, the ‘source’ command in every bash script **MUST** be updated with the full local path.
 
 # Input Files
 CN-Learn takes a text file with the list of CNV predictions from multiple algorithms as its primary input and relies on five other important input files. This input files are expected to be placed in their corresponding directories without headers. Sample files for each of the following 6 files are readily provided with the project.
@@ -101,3 +101,7 @@ Run cn_learn.sh to train CN-Learn and identify true CNVs in the test set. This s
 ```
 bash cn_learn.sh
 ```
+
+
+
+Once these steps are successful, the final output file named CNV_list_with_predictions.csv will be available in the **DATA** directory.
