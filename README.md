@@ -19,7 +19,7 @@ Once the ‘CN_Learn’ repository is cloned to a local folder, all the director
 ### Script Organization
 All the scripts required to run CN-Learn are provided in the ‘scripts’ directory. There are five bash scripts that preprocess data required for CN-Learn and one that executes CN-Learn. These bash scripts in turn invoke R and Python scripts to accomplish specific tasks. 
 
-## config.params 
+### config.params 
 In order to make the workflow/scripts easy to read and execute, several commonly used parameters, directory names and file paths are maintained in a single parameter file named ‘config.params’. This file is located in the main project folder and sourced into each bash script using the ‘source’ command. 
 
 NOTE: Since the config.params file is sourced into every script using hard-coded full path, the ‘source’ command in every bash script **MUST** be updated with the full local path.
@@ -44,10 +44,10 @@ Place the following files in the **SOURCE** directory.
 >**`CHR	START	END	CNV_TYPE	SIZE	SAMPLE`**
 
 # How to run CN-Learn
-**Step 1:** 
+### **Step 1:** 
 Make sure all the prerequisite softwares and packages are installed. Clone the ‘CN_Learn’ repository to a local directory.
 
-**Step 2:**
+### **Step 2:**
 Make the following updates to the parameters listed in the ‘config.params’ file,
 1.	Update the PROJ_DIR parameter with the full path of the local project directory. 
 2.	Update the CALLER_LIST parameter to list all the CNV callers used in the project.
@@ -58,38 +58,38 @@ Additional instructions are provided in the config.params file.
 
 Once the changes are complete, update the project directory path provided in the ‘source’ command in each bash script (`ls *.sh`) in the ‘scripts’ directory.
 
-**Step 3:**
+### **Step 3:**
 Make sure that all the six input files as well as the bam files for each sample are present in their corresponding directories.
 
-**Step 4:**
+### **Step 4:**
 Run generate_bp_coverage.sh to extract the basepair level coverage for each sample. Since this information can be extracted independently for each sample, make the necessary changes to this script to parallelize the process.
 ```
 bash generate_bp_coverage.sh
 ```
 
-**Step 5:**
+### **Step 5:**
 Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers used.
 ```
 bash calculate_CNV_overlap.sh
 ```
 
-**Step 6:**
+### **Step 6:**
 Run merge_overlapping_CNVs.sh to resolve breakpoint conflicts of concordant CNVs.
 ```
 bash merge_overlapping_CNVs.sh
 ```
 
-**Step 7:**
+### **Step 7:**
 Run extract_gc_map_vals.sh to extract GC content and mappability scores for singletons and breakpoint-resolved CNVs
 ```
 bash extract_gc_map_vals.sh
 ```
-**Step 8:**
+### **Step 8:**
 Run calc_valdata_overlap.sh to label the training data based on the overlap between CNVs in the training data and the “gold standard” validated CNVs. This script also reformats the CNVs in new samples (i.e., test data).
 ```
 bash calc_valdata_overlap.sh
 ```
-**Step 9:**
+### **Step 9:**
 ```
 python cn_learn.py [DATA_DIRECTORY] [TRAINING_DATA] [TEST_DATA] [CLASSIFIER_TYPE] [LOWER_SIZE_LIMIT] [UPPER_SIZE_LIMIT] 
                     [NUMBER_OF_TREES] [CALLER_COUNT] [CALLER_LIST]
@@ -102,6 +102,4 @@ Run cn_learn.sh to train CN-Learn and identify true CNVs in the test set. This s
 bash cn_learn.sh
 ```
 
-
-
-Once these steps are successful, the final output file named CNV_list_with_predictions.csv will be available in the **DATA** directory.
+Once these steps are successful, the final output file named **CNV_list_with_predictions.csv** will be available in the **DATA** directory.
