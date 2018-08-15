@@ -8,7 +8,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/CN-Learn/config.params
+source /data/CN_Learn/config.params
 
 #########################################
 # STEP 0: Declare variables required    #

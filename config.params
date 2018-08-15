@@ -13,8 +13,9 @@ PROJ_DIR='/data/CN_Learn/'
 SCRIPTS_DIR=${PROJ_DIR}'scripts/'
 SOURCE_DIR=${PROJ_DIR}'source/'
 DATA_DIR=${PROJ_DIR}'data/'
-DATA_BPCOV_DIR=${DATA_DIR}'bp_level_coverage/'
+DATA_BPCOV_DIR=${DATA_DIR}'bp_coverage_dir/'
 DATA_BPCOV_DIR='/data2/RF_Model_SVIP/data/extract/bp_level_coverage/'
+BAM_FILR_DIR=${SOURCE_DIR}'bam_files/'
 
 ###################
 # 2) Subdirectories 
@@ -22,14 +23,8 @@ DATA_BPCOV_DIR='/data2/RF_Model_SVIP/data/extract/bp_level_coverage/'
 PRED_DIR=${DATA_DIR}'PRED_DIR/'
 VALD_DIR=${DATA_DIR}'VALD_DIR/'
 
-#######################
-# 3) Source directories
-#######################
-BAM_DIR='/data2/SVIP/WES-decrypted/'           
-REF_GENOME_DIR='/data/bx_references/GRCh37/'
-
 ###################
-# 4) Software Tools
+# 3) Software Tools
 ###################
 GATK_SW_DIR='/data/software/gatk/gatk-3.5/'
 BEDTOOLS_DIR='/data/software/bedtools2/bin/'
@@ -37,10 +32,9 @@ SAMTOOLS_DIR='/data/software/samtools-1.3.1/'
 PLINK_DIR='/data/software/plinkseq-0.10/'
 
 ###############
-# 5) File Names
+# 4) File Names
 ###############
 REF_GENOME='/data/bx_references/GRCh37/human_g1k_v37.fasta'
-BAM_LIST=${SOURCE_DIR}'list_of_bam_with_fullpath'
 SAMPLE_LIST=${SOURCE_DIR}'sample_list.txt'
 SAMPLE_LIST_TRAIN=${SOURCE_DIR}'sample_list_train.txt'
 SAMPLE_LIST_TEST=${SOURCE_DIR}'sample_list_test.txt'
@@ -48,7 +42,7 @@ TARGET_PROBES=${SOURCE_DIR}'targets_auto_no_chr.bed'
 VAL_DATA_FILE=${SOURCE_DIR}'validated_cnvs.txt'
 
 ################################
-# 6) Global Variables/Parameters
+# 5) Global Variables/Parameters
 ################################
 CALLER_LIST="CANOES CLAMMS CODEX XHMM"
 CALLER_COUNT=`echo ${CALLER_LIST} | wc -w`
