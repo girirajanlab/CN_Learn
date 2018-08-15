@@ -63,46 +63,44 @@ Make sure that all the six input files as well as the bam files for each sample 
 
 ### **`Step 4:`**
 Run generate_bp_coverage.sh to extract the basepair level coverage for each sample. Since this information can be extracted independently for each sample, make the necessary changes to this script to parallelize the process.
-```
-bash generate_bp_coverage.sh
-```
+
+> **bash generate_bp_coverage.sh**
+
 
 ### **`Step 5:`**
 Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers used.
-```
-bash calculate_CNV_overlap.sh
-```
+
+> **bash calculate_CNV_overlap.sh**
+
 
 ### **`Step 6:`**
 Run merge_overlapping_CNVs.sh to resolve breakpoint conflicts of concordant CNVs.
-```
-bash merge_overlapping_CNVs.sh
-```
+
+> **bash merge_overlapping_CNVs.sh**
+
 
 ### **`Step 7:`**
 Run extract_gc_map_vals.sh to extract GC content and mappability scores for singletons and breakpoint-resolved CNVs
-```
-bash extract_gc_map_vals.sh
-```
+
+> **bash extract_gc_map_vals.sh**
+
 ### **`Step 8:`**
 Run calc_valdata_overlap.sh to label the training data based on the overlap between CNVs in the training data and the “gold standard” validated CNVs. This script also reformats the CNVs in new samples (i.e., test data).
-```
-bash calc_valdata_overlap.sh
-```
+
+> **bash calc_valdata_overlap.sh**
+
 ### **`Step 9:`**
 Run the python script cn_learn.py directly with the required parameters
 
-```
-python cn_learn.py [DATA_DIRECTORY] [TRAINING_DATA] [TEST_DATA] [CLASSIFIER_TYPE] [LOWER_SIZE_LIMIT] 
-                    [UPPER_SIZE_LIMIT] [NUMBER_OF_TREES] [CALLER_COUNT] [CALLER_LIST]
-```
+
+> **python cn_learn.py [DATA_DIRECTORY] [TRAINING_DATA] [TEST_DATA] [CLASSIFIER_TYPE] [LOWER_SIZE_LIMIT] [UPPER_SIZE_LIMIT] [NUMBER_OF_TREES] [CALLER_COUNT] [CALLER_LIST]**
 
 > or
 
 Run cn_learn.sh to train CN-Learn and identify true CNVs in the test set. This script in turn invokes the python script cn_learn.py
-```
-bash cn_learn.sh
-```
+
+> **bash cn_learn.sh**
+
 
 Once these steps are successful, the final output file named **CNV_list_with_predictions.csv** will be available in the **DATA** directory
 
