@@ -10,6 +10,9 @@ CN-Learn is a framework to integrate Copy Number Variant (CNV) predictions made 
 6.	bedtools (v2.0)
 7.	samtools (v1.3.1)
 
+# Citation
+Kumar et al, "An integrative approach for accurate detection of copy-number variants from exome sequencing"
+
 # TLDR
 >**`python cn_learn.py [DATA_DIRECTORY] [TRAINING_DATA] [TEST_DATA] [CLASSIFIER_TYPE] [LOWER_SIZE_LIMIT] [UPPER_SIZE_LIMIT] [NUMBER_OF_TREES] [CALLER_COUNT] [CALLER_LIST]`**
 
@@ -102,5 +105,13 @@ Run cn_learn.sh to train CN-Learn and identify true CNVs in the test set. This s
 > **bash cn_learn.sh**
 
 
-Once these steps are successful, the final output file named **CNV_list_with_predictions.csv** will be available in the **DATA** directory
+# Output
+Once the above listed steps finish successfully, the final output file named **CNV_list_with_predictions.csv** will be available in the **DATA** directory. The last two columns of the output file provides the probability of the CNVs being 'True' and the classification label **(1 = 'True'; 2 = 'False')** based on a cutoff threshold of **_0.5_**. 
+The complete set of columns in the output file is listed below.
 
+```
+CHR PRED_START PRED_END TYPE SAMPLE NUM_OVERLAPS RD_PROP GC PRED_SIZE MAP NUM_TARGETS SIZE_LABEL `LIST OF CALLERS` PRED_PROBS PRED_LABEL
+```
+
+# Contact
+For questions or comments, please contact Vijay Kumar (vxm915@psu.edu), Matthew Jensen (mpj5142@psu.edu) or Santhosh Girirajan (sxg47@psu.edu).
