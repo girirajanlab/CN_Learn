@@ -1,5 +1,7 @@
 # CN-Learn 
-CN-Learn is a framework to integrate Copy Number Variant (CNV) predictions made by multiple algorithms using exome sequencing datasets. CN-Learn can be modified and/or extended to include newer set of algorithms in the future. Using a small set of CNVs with cross-platform validations, CN-Learn learns to segregate true CNVs from false positives. 
+CN-Learn is a framework to integrate Copy Number Variant (CNV) predictions made by multiple algorithms using exome sequencing datasets. Unlike traditional methods that depend on a single measure of concordance, CN-Learn leverages the extent of concordance among multiple method as well as additional genomic contexts such as GC content, mappability and local read depth fluctuations. Using this exhaustive set of predictors extracted for CNVs from a “gold-standard” CNV call set, CN-Learn builds a ‘Random Forest’ classifier with hundreds of decision trees to estimate the probability of each CNV in a fresh set of samples being true. This strategy provides CN-Learn the ability to segregate true CNV calls from false positives in an informed fashion with extremely high precision.
+
+While CN-Learn has been shown to perform best when built as a ‘Random Forest’ classifier, it can also be built as a ‘Logistic Regression’ or ‘Support Vector Machine’ classifier. CN-Learn can also be seamlessly extended to include newer set of CNV calling algorithms in the future by simply changing a single parameter supplied to CN-Learn. 
 
 ## Software Requirements
 1.	python – Version 2.7
