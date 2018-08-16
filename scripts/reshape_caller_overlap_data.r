@@ -38,7 +38,8 @@ calls_w_ov_df$OV_CALLER <- gsub("\\.", "NO_OVERLAPS", calls_w_ov_df$OV_CALLER)
 # This column will not be processed further.
 calls_w_ov_df$DUMMY_UNIQ_ID <- seq.int(nrow(calls_w_ov_df))
 
-calls_w_ov_reshaped_df <- dcast(calls_w_ov_df, CHR + START + END + CNV_TYPE + SAMPLE + CALLER + PRED_SIZE + DUMMY_UNIQ_ID ~ OV_CALLER, value.var='OV_PROP')
+calls_w_ov_reshaped_df <- dcast(calls_w_ov_df, CHR + START + END + CNV_TYPE + SAMPLE + CALLER + 
+                                PRED_SIZE + DUMMY_UNIQ_ID ~ OV_CALLER, value.var='OV_PROP')
 calls_w_ov_reshaped_df[is.na(calls_w_ov_reshaped_df)] <- 0
 
 #########################################################################

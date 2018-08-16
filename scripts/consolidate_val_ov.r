@@ -40,26 +40,34 @@ for (caller_name in caller_list) {
     dyn_col_names <- append(dyn_col_names, caller_name)
 }
 
-colnames(train_data) = c('CHR','PRED_START', 'PRED_END','TYPE', 'SAMPLE', dyn_col_names, 'NUM_OVERLAPS', 'RD_PROP', 'GC', 'PRED_SIZE', 'MAP', 'NUM_TARGETS', 
-                         'OV_IND', 'OV_START', 'OV_END', 'MA_TYPE', 'MA_SIZE', 'MA_SAMPLE', 'OV_SIZE')
-colnames(test_data) = c('CHR','PRED_START', 'PRED_END','TYPE', 'SAMPLE', dyn_col_names, 'NUM_OVERLAPS', 'RD_PROP', 'GC', 'PRED_SIZE', 'MAP', 'NUM_TARGETS') 
+colnames(train_data) = c('CHR','PRED_START', 'PRED_END','TYPE', 'SAMPLE', dyn_col_names, 
+                         'NUM_OVERLAPS', 'RD_PROP', 'GC', 'PRED_SIZE', 'MAP', 'NUM_TARGETS', 
+                         'OV_IND', 'OV_START','OV_END', 'MA_TYPE', 'MA_SIZE', 'MA_SAMPLE', 'OV_SIZE')
+colnames(test_data) = c('CHR','PRED_START', 'PRED_END','TYPE', 'SAMPLE', 
+                       dyn_col_names, 'NUM_OVERLAPS', 'RD_PROP', 'GC', 
+                       'PRED_SIZE', 'MAP', 'NUM_TARGETS') 
 
 dyn_query_string <- character(0)
 for (caller_name in caller_list) {
     dyn_query_string <- paste(dyn_query_string, caller_name, sep =", ") 
 }
 
-sql_query_1 <- paste0("select CHR, PRED_START, PRED_END, TYPE, SAMPLE ", dyn_query_string, ", NUM_OVERLAPS, RD_PROP, round(GC,2) as GC, PRED_SIZE, ",
-                    "round(MAP) as MAP, NUM_TARGETS, max(OV_IND) as OV_IND ",
-                    "from train_data ",
-                    "group by CHR, PRED_START, PRED_END, TYPE, SAMPLE ", dyn_query_string, ", NUM_OVERLAPS, RD_PROP, round(GC,2), PRED_SIZE, round(MAP,2), NUM_TARGETS")
+sql_query_1 <- paste0("select CHR, PRED_START, PRED_END, TYPE, SAMPLE ", dyn_query_string, 
+                      ", NUM_OVERLAPS, RD_PROP, round(GC,2) as GC, PRED_SIZE, ",
+                      "round(MAP) as MAP, NUM_TARGETS, max(OV_IND) as OV_IND ",
+                      "from train_data ",
+                      "group by CHR, PRED_START, PRED_END, TYPE, SAMPLE ", dyn_query_string, 
+                      ", NUM_OVERLAPS, RD_PROP, round(GC,2), PRED_SIZE, round(MAP,2), NUM_TARGETS")
 
 train_df <- sqldf(sql_query_1)
 
-sql_query_2 <- paste0("select CHR, PRED_START, PRED_END, TYPE, SAMPLE ", dyn_query_string, ", NUM_OVERLAPS, RD_PROP, round(GC,2) as GC, PRED_SIZE, ",
-                    "round(MAP) as MAP, NUM_TARGETS ",
-                    "from test_data ",
-                    "group by CHR, PRED_START, PRED_END, TYPE, SAMPLE ", dyn_query_string, ", NUM_OVERLAPS, RD_PROP, round(GC,2), PRED_SIZE, round(MAP,2), NUM_TARGETS")
+sql_query_2 <- paste0("select CHR, PRED_START, PRED_END, TYPE, SAMPLE ", dyn_query_string, ", 
+                       NUM_OVERLAPS, RD_PROP, round(GC,2) as GC, PRED_SIZE, round(MAP) as MAP, 
+                       NUM_TARGETS ",
+                       "from test_data ",
+                       "group by CHR, PRED_START, PRED_END, TYPE, SAMPLE ", 
+                       dyn_query_string, ", NUM_OVERLAPS, RD_PROP, round(GC,2), 
+                       PRED_SIZE, round(MAP,2), NUM_TARGETS")
 
 test_df <- sqldf(sql_query_2)
 

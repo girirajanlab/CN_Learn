@@ -48,13 +48,14 @@ colnames(pred_region_df) <- c("CHR", "START", "END", "CNV_TYPE", "SAMPLE", dyn_c
                               "NUM_TARGETS", "HALF_NUM_TARGETS", "FIRST_TARGET", "LAST_TARGET", "UNIQ_PRED_COMBO_ID")
 colnames(right_flank_df) <- c("CHR", "START", "END", "CNV_TYPE", "SAMPLE", dyn_col_names, "OVERLAP_COUNT", "GRP_NAME",
                               "NUM_TARGETS", "HALF_NUM_TARGETS", "FIRST_TARGET", "LAST_TARGET", "UNIQ_PRED_COMBO_ID")
-colnames(target_rd_df) <- c("CHR", "START", "END", "TARG_SIZE", "UNIQ_TARG_ID", "OV_CHR", "OV_START", "OV_END", "READ_DEPTH", "NUM_BPS")
-
+colnames(target_rd_df) <- c("CHR", "START", "END", "TARG_SIZE", "UNIQ_TARG_ID", "OV_CHR", "OV_START", "OV_END", 
+                            "READ_DEPTH", "NUM_BPS")
 
 flank_df <- rbind(left_flank_df, right_flank_df)
 
 target_rd_df$READ_DEPTH <- sub(".", "0", target_rd_df$READ_DEPTH, fixed=TRUE)
-target_rd_df <- transform(target_rd_df, TARG_SIZE=as.numeric(TARG_SIZE), UNIQ_TARG_ID=as.numeric(UNIQ_TARG_ID),READ_DEPTH=as.numeric(READ_DEPTH),NUM_BPS=as.numeric(NUM_BPS))
+target_rd_df <- transform(target_rd_df, TARG_SIZE=as.numeric(TARG_SIZE), UNIQ_TARG_ID=as.numeric(UNIQ_TARG_ID),
+                          READ_DEPTH=as.numeric(READ_DEPTH),NUM_BPS=as.numeric(NUM_BPS))
 pred_region_df <- transform(pred_region_df, FIRST_TARGET=as.numeric(FIRST_TARGET), LAST_TARGET=as.numeric(LAST_TARGET))
 flank_df <- transform(flank_df, FIRST_TARGET=as.numeric(FIRST_TARGET), LAST_TARGET=as.numeric(LAST_TARGET))
 
@@ -80,20 +81,24 @@ for (caller_name in caller_list) {
     dyn_query_string_2 <- paste(dyn_query_string_2, paste0(" max(", caller_name, ") as ", caller_name), sep =", ")
 }
 
-sql_query_1 <- paste0("select CHR, START, END, CNV_TYPE, SAMPLE ", dyn_query_string_1, ", OVERLAP_COUNT, NUM_TARGETS, HALF_NUM_TARGETS, ",
-                      "GRP_NAME, UNIQ_PRED_COMBO_ID, sum(NUM_BPS) as PR_NUM_BPS, sum(READ_DEPTH * NUM_BPS) as PR_TOT_RD, ",
+sql_query_1 <- paste0("select CHR, START, END, CNV_TYPE, SAMPLE ", dyn_query_string_1, 
+                      ", OVERLAP_COUNT, NUM_TARGETS, HALF_NUM_TARGETS, GRP_NAME, UNIQ_PRED_COMBO_ID, ", 
+                      "sum(NUM_BPS) as PR_NUM_BPS, sum(READ_DEPTH * NUM_BPS) as PR_TOT_RD, ",
                       "round(sum(READ_DEPTH * NUM_BPS)/sum(NUM_BPS),2) as PR_AVG_RD ",
                       "from pred_region_rd_df ", 
-                      "group by CHR, START, END, CNV_TYPE, SAMPLE ", dyn_query_string_1, ", OVERLAP_COUNT, NUM_TARGETS, HALF_NUM_TARGETS, ",
+                      "group by CHR, START, END, CNV_TYPE, SAMPLE ", dyn_query_string_1, 
+                      ", OVERLAP_COUNT, NUM_TARGETS, HALF_NUM_TARGETS, ",
                       "GRP_NAME, UNIQ_PRED_COMBO_ID")
 
 rd_freq_pred <- sqldf(sql_query_1)
 
-sql_query_2 <- paste0("select CHR, START, END, CNV_TYPE, SAMPLE ", dyn_query_string_1, ", OVERLAP_COUNT, NUM_TARGETS, HALF_NUM_TARGETS, ",
-                      "GRP_NAME, UNIQ_PRED_COMBO_ID, sum(NUM_BPS) as FL_NUM_BPS, sum(READ_DEPTH * NUM_BPS) as FL_TOT_RD, ",
+sql_query_2 <- paste0("select CHR, START, END, CNV_TYPE, SAMPLE ", dyn_query_string_1, 
+                      ", OVERLAP_COUNT, NUM_TARGETS, HALF_NUM_TARGETS, GRP_NAME, UNIQ_PRED_COMBO_ID, ",
+                      "sum(NUM_BPS) as FL_NUM_BPS, sum(READ_DEPTH * NUM_BPS) as FL_TOT_RD, ",
                       "round(sum(READ_DEPTH * NUM_BPS)/sum(NUM_BPS),2) as FL_AVG_RD ",
                       "from flank_rd_df ",
-                      "group by CHR, START, END, CNV_TYPE, SAMPLE ", dyn_query_string_1, ", OVERLAP_COUNT, NUM_TARGETS, HALF_NUM_TARGETS, ",
+                      "group by CHR, START, END, CNV_TYPE, SAMPLE ", dyn_query_string_1, 
+                      ", OVERLAP_COUNT, NUM_TARGETS, HALF_NUM_TARGETS, ",
                       "GRP_NAME, UNIQ_PRED_COMBO_ID")
 
 rd_freq_flank <- sqldf(sql_query_2)
@@ -114,7 +119,8 @@ del_rd_info <- sqldf("select GRP_NAME, min(RD_Ratio) as MIN_RD_RATIO from cons_r
                       group by GRP_NAME
                       order by cast(trim(substr(GRP_NAME,2,3)) as int)")
 
-sql_query_3 <- paste0("select CHR, MIN(START) as START, MAX(END) as END, CNV_TYPE, SAMPLE ", dyn_query_string_2, ", MAX(OVERLAP_COUNT) AS OVERLAP_COUNT, cons_rd_info.GRP_NAME, RD_Ratio ",
+sql_query_3 <- paste0("select CHR, MIN(START) as START, MAX(END) as END, CNV_TYPE, SAMPLE ", dyn_query_string_2, 
+                      ", MAX(OVERLAP_COUNT) AS OVERLAP_COUNT, cons_rd_info.GRP_NAME, RD_Ratio ",
                       "from cons_rd_info left outer join del_rd_info ",
                       "where cons_rd_info.GRP_NAME = del_rd_info.GRP_NAME and cons_rd_info.RD_Ratio = del_rd_info.MIN_RD_RATIO ",
                       "group by CHR, CNV_TYPE, SAMPLE, cons_rd_info.GRP_NAME ",
@@ -127,7 +133,8 @@ dup_rd_info <- sqldf("select GRP_NAME, max(RD_Ratio) as MIN_RD_RATIO from cons_r
                       group by GRP_NAME
                       order by cast(trim(substr(GRP_NAME,2,3)) as int)")
 
-sql_query_4 <- paste0("select CHR, MIN(START) as START, MAX(END) as END, CNV_TYPE, SAMPLE ", dyn_query_string_2, ", MAX(OVERLAP_COUNT) AS OVERLAP_COUNT, cons_rd_info.GRP_NAME, RD_Ratio ",
+sql_query_4 <- paste0("select CHR, MIN(START) as START, MAX(END) as END, CNV_TYPE, SAMPLE ", dyn_query_string_2, 
+                      ", MAX(OVERLAP_COUNT) AS OVERLAP_COUNT, cons_rd_info.GRP_NAME, RD_Ratio ",
                       "from cons_rd_info left outer join dup_rd_info ",
                       "where cons_rd_info.GRP_NAME = dup_rd_info.GRP_NAME and cons_rd_info.RD_Ratio = dup_rd_info.MIN_RD_RATIO ",
                       "group by CHR, CNV_TYPE, SAMPLE, cons_rd_info.GRP_NAME ",
