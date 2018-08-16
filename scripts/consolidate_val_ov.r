@@ -8,10 +8,7 @@
 # size and validation label.                                                   #
 ################################################################################
 options(gsubfn.engine = "R")
-library(plyr)
 library(sqldf)
-library(caret)
-library(scales)
 
 args = commandArgs(trailingOnly=TRUE)
 input_dir = args[1]
