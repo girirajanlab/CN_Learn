@@ -38,6 +38,7 @@ Place the following file in the **DATA** directory.
 >**`CNV_TYPE = DUP or DEL`**
 
 Place the following files in the **SOURCE** directory. 
+
 2. **sample_list.txt**	= List of samples to be processed by CN-Learn
 3. **sample_list_train.txt** = List of samples to be used to train CN-Learn
 4. **sample_list_test.txt**	= List of samples in which true CNVs are to be identified by CN-Learn
