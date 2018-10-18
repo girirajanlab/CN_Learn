@@ -77,18 +77,23 @@ Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers us
 
 ### **`Run either steps 5A & 5B together (Or) just step 5`**
 
-### **`Step 5A:`**
+```diff
++### **`Step 5A:`**
+```
 Run generate_bp_coverage.sh to extract the basepair level coverage for each sample. Since this information can be extracted independently for each sample, make the necessary changes to this script to parallelize the process.
 
 > **bash generate_bp_coverage.sh**
 
-
-### **`Step 5B:`**
+```diff
++### **`Step 5B:`**
+```
 Run merge_overlapping_CNVs_readdepth.sh to resolve breakpoint conflicts of concordant CNVs.
 
 > **bash merge_overlapping_CNVs_readdepth.sh**
 
-### **`Step 5:`**
+```diff
+-### **`Step 5:`**
+```
 Run merge_overlapping_CNVs_endjoin.sh to resolve breakpoint conflicts of concordant CNVs.
 
 > **bash merge_overlapping_CNVs_endjoin.sh**
