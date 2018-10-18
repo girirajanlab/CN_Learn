@@ -88,8 +88,6 @@ Run merge_overlapping_CNVs_readdepth.sh to resolve breakpoint conflicts of conco
 
 > **bash merge_overlapping_CNVs_readdepth.sh**
 
-<br/><br/>
-
 ### **`Step 5:`**
 Run merge_overlapping_CNVs_endjoin.sh to resolve breakpoint conflicts of concordant CNVs.
 
