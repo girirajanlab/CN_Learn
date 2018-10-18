@@ -67,35 +67,43 @@ Once the changes are complete, update the project directory path provided in the
 ### **`Step 3:`**
 Make sure that all the six input files as well as the bam files for each sample are present in their corresponding directories.
 
+
 ### **`Step 4:`**
+Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers used.
+
+> **bash calculate_CNV_overlap.sh**
+
+#### **Run 5A + 5B (OR) 5**
+
+### **`Step 5A:`**
 Run generate_bp_coverage.sh to extract the basepair level coverage for each sample. Since this information can be extracted independently for each sample, make the necessary changes to this script to parallelize the process.
 
 > **bash generate_bp_coverage.sh**
 
 
-### **`Step 5:`**
-Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers used.
+### **`Step 5B:`**
+Run merge_overlapping_CNVs_readdepth.sh to resolve breakpoint conflicts of concordant CNVs.
 
-> **bash calculate_CNV_overlap.sh**
+> **bash merge_overlapping_CNVs_readdepth.sh**
+
+
+### **`Step 5:`**
+Run merge_overlapping_CNVs_endjoin.sh to resolve breakpoint conflicts of concordant CNVs.
+
+> **bash merge_overlapping_CNVs_endjoin.sh**
 
 
 ### **`Step 6:`**
-Run merge_overlapping_CNVs.sh to resolve breakpoint conflicts of concordant CNVs.
-
-> **bash merge_overlapping_CNVs.sh**
-
-
-### **`Step 7:`**
 Run extract_gc_map_vals.sh to extract GC content and mappability scores for singletons and breakpoint-resolved CNVs
 
 > **bash extract_gc_map_vals.sh**
 
-### **`Step 8:`**
+### **`Step 7:`**
 Run calc_valdata_overlap.sh to label the training data based on the overlap between CNVs in the training data and the “gold standard” validated CNVs. This script also reformats the CNVs in new samples (i.e., test data).
 
 > **bash calc_valdata_overlap.sh**
 
-### **`Step 9:`**
+### **`Step 8:`**
 Run the python script cn_learn.py directly with the required parameters
 
 

@@ -15,7 +15,7 @@ SOURCE_DIR=${PROJ_DIR}'source/'
 DATA_DIR=${PROJ_DIR}'data/'
 DATA_BPCOV_DIR=${DATA_DIR}'bp_coverage_dir/'
 DATA_BPCOV_DIR='/data2/RF_Model_SVIP/data/extract/bp_level_coverage/'
-BAM_FILR_DIR=${SOURCE_DIR}'bam_files/'
+BAM_FILE_DIR=${SOURCE_DIR}'bam_files/'
 
 ###################
 # 2) Subdirectories 
