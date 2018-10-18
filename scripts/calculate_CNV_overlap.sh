@@ -109,7 +109,7 @@ elif [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
      [ ! -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
-                                 -b ${VAL_DATA_DIR}dummy.bed | cut -f1-6,12,13 \
+                                 -b ${SOURCE_DIR}dummy.bed | cut -f1-6,12,13 \
                                  >> ${DATA_DIR}${caller}_caller_ov.txt;
 fi
 done

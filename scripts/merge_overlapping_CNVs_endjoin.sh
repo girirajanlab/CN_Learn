@@ -1,8 +1,8 @@
 #!/bin/bash
 ################################################################################
-# Script : merge_overlapping_CNVs.sh                                           # 
+# Script : merge_overlapping_CNVs_endjoin.sh                                   # 
 # Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           #
+# Date   : 10/18/2018                                                           #
 # This is the master program that merges the calls with consensus among        #
 # multiple callers and extracts additional read depth info.                    #
 # Prereqs (Format= <FILE LOCATION> File Description):                          #
@@ -33,16 +33,6 @@ then
     exit 1;
 fi
 
-for sample in `cat ${SAMPLE_LIST} | head -10`;
-do
-    if [ ! -f ${DATA_BPCOV_DIR}${sample}.bpcov.bed ];
-    then
-        echo "ERROR : The file with basepair level coverage is missing for one ";
-        echo "or more samples. Make sure the coverage file for each sample is  ";
-        echo "available and rerun the script.";
-    fi
-done
-
 ################################################################
 # Add a column with unique number for each exome capture probe #
 ################################################################
@@ -69,51 +59,6 @@ cat ${DATA_DIR}${CONS_PRED_W_OV_PROP_FILE_NAME} | grep -w ${sample} \
 Rscript ${SCRIPTS_DIR}generate_interval_combo.r  ${PRED_DIR}  ${sample}_${cnv_type}_preds.txt \
         ${sample}_${cnv_type}_preds_w_grps.txt  ${sample}_${cnv_type}_grouped_preds.txt \
         ${sample}_${cnv_type}_preds_all_intvl_combos.txt  ${CALLER_COUNT}  ${CALLER_LIST}
-${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${sample}_${cnv_type}_preds_all_intvl_combos.txt \
-                                 -b ${PRED_DIR}${TARGET_PROBES_W_LEN_ID} \
-                                 > ${PRED_DIR}${sample}_${cnv_type}_preds_all_intvl_targs.txt
-Rscript ${SCRIPTS_DIR}identify_targets_of_interest.r  ${PRED_DIR} \
-        ${sample}_${cnv_type}_preds_all_intvl_targs.txt  ${TARGET_PROBES_W_LEN_ID} \
-        ${sample}_${cnv_type}_all_intvl_info.txt  ${sample}_${cnv_type}_targets_of_interest.txt \
-        ${CALLER_COUNT} ${CALLER_LIST}
-
-################################################################################################
-# Generate separate files with probe information for predicted and left/right flanking regions #
-################################################################################################
-last_caller_column=$((5 + ${CALLER_COUNT}))
-addl_info_col_start=$((${last_caller_column} + 1))
-addl_info_col_end=$((${last_caller_column} + 4))
-left_flank_start_col=$((${last_caller_column} + 5))
-left_flank_end_col=$((${last_caller_column} + 6))
-pred_region_start_col=$((${last_caller_column} + 7))
-pred_region_end_col=$((${last_caller_column} + 8))
-right_flank_start_col=$((${last_caller_column} + 9))
-right_flank_end_col=$((${last_caller_column} + 10))
-comb_column=$((${last_caller_column} + 11))
-
-cat ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info.txt | \
-    cut -f1-${addl_info_col_end},${comb_column},${left_flank_start_col},${left_flank_end_col} \
-    > ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info_left_flank.txt
-cat ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info.txt | \
-    cut -f1-${addl_info_col_end},${comb_column},${pred_region_start_col},${pred_region_end_col} \
-    > ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info_pred_region.txt
-cat ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info.txt | \
-    cut -f1-${addl_info_col_end},${comb_column},${right_flank_start_col},${right_flank_end_col} \
-    > ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info_right_flank.txt
-
-################################################
-# Extract coverage for each target of interest #
-################################################
-${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${sample}_${cnv_type}_targets_of_interest.txt \
-                                 -b ${DATA_BPCOV_DIR}${sample}.bpcov.bed \
-                                 > ${PRED_DIR}${sample}_${cnv_type}_targets_of_interest_w_cov.txt
-
-Rscript ${SCRIPTS_PRE_DIR}measure_rd_stats.r  ${PRED_DIR} \
-        ${sample}_${cnv_type}_all_intvl_info_left_flank.txt  \
-        ${sample}_${cnv_type}_all_intvl_info_pred_region.txt \
-        ${sample}_${cnv_type}_all_intvl_info_right_flank.txt \
-        ${sample}_${cnv_type}_targets_of_interest_w_cov.txt  ${sample}_${cnv_type}_w_rd_stats.txt \
-        ${CALLER_COUNT} ${CALLER_LIST}
 
 done
 done
@@ -136,21 +81,9 @@ rm ${DATA_DIR}extn_grouped_preds.txt
 fi
 touch ${DATA_DIR}extn_grouped_preds.txt
 
-if [ -f ${DATA_DIR}all_intvl_info.txt ];
-then
-rm ${DATA_DIR}all_intvl_info.txt
-fi
-touch ${DATA_DIR}all_intvl_info.txt
-
-if [ -f ${DATA_DIR}final_preds_w_rd_stats.txt ];
-then
-rm ${DATA_DIR}final_preds_w_rd_stats.txt
-fi
-touch ${DATA_DIR}final_preds_w_rd_stats.txt
-
 #############################################################
 # STEP 4: Loop through each sample and CNV type to generate #
-#         four separate/consolidated output files.          #
+#         teo separate/consolidated output files.           #
 #############################################################
 for sample in `cat ${SAMPLE_LIST} | head -10`;
 do
@@ -159,10 +92,57 @@ do
 
 cat ${PRED_DIR}${sample}_${cnv_type}_preds_w_grps.txt >> ${DATA_DIR}preds_w_grps_info.txt
 cat ${PRED_DIR}${sample}_${cnv_type}_grouped_preds.txt >> ${DATA_DIR}extn_grouped_preds.txt
-cat ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info.txt >> ${DATA_DIR}all_intvl_info.txt
-cat ${PRED_DIR}${sample}_${cnv_type}_w_rd_stats.txt >> ${DATA_DIR}final_preds_w_rd_stats.txt
 
 done
 done
+
+last_caller_column=$((6 + ${CALLER_COUNT}))
+concordance_column=$((${last_caller_column} + 1))
+col_after_conc_column=$((${concordance_column} + 1))
+
+
+awk -v OFS='\t' -v conc_col=${concordance_column} '{if ($conc_col != 1) print $1,$2,$3,$4,$5,"CONSENSUS";}' ${DATA_DIR}extn_grouped_preds.txt  > ${DATA_DIR}extn_grouped_conc_preds.txt 
+awk -v conc_col=${concordance_column} '{if ($conc_col == 1) print $0;}' ${DATA_DIR}extn_grouped_preds.txt  > ${DATA_DIR}extn_grouped_nonconc_preds.txt
+
+
+if [ -f ${DATA_DIR}CONSENSUS_caller_ov.txt ];
+then
+rm ${DATA_DIR}CONSENSUS_caller_ov.txt
+fi
+touch ${DATA_DIR}CONSENSUS_caller_ov.txt
+
+for sample in `cat ${SAMPLE_LIST} | head -10`;
+do
+for cnv_type in "DUP" "DEL";
+do
+cat ${DATA_DIR}extn_grouped_conc_preds.txt | grep -w ${sample} | grep ${cnv_type} > ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt;
+
+for caller in ${CALLER_LIST};
+do
+
+if [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
+then
+${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
+                                 -b ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
+                                 | awk -v OFS='\t' '{if ($8 > 0) print $0;}' >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
+
+elif [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ ! -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
+then
+${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
+                                 -b ${SOURCE_DIR}dummy.bed | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
+                                 | awk -v OFS='\t' '{if ($8 > 0) print $0;}' >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
+fi
+
+done
+done
+done
+
+Rscript --vanilla ${SCRIPTS_DIR}reshape_caller_overlap_data.r  ${DATA_DIR} \
+                  ${DATA_DIR}CONSENSUS_caller_ov.txt  ${DATA_DIR}CONSENSUS_caller_ov_prop.txt \
+                  ${CALLER_COUNT} ${CALLER_LIST}
+
+cut -f6,7 --complement ${DATA_DIR}CONSENSUS_caller_ov_prop.txt > ${DATA_DIR}final_preds.txt
+cut -f6 --complement ${DATA_DIR}extn_grouped_nonconc_preds.txt >> ${DATA_DIR}final_preds.txt
+
 
 echo "Job ended on `hostname` at `date`"

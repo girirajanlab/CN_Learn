@@ -18,10 +18,10 @@ source /data/CN_Learn/config.params
 #####################################
 # STEP 0: Declare variables         #
 #####################################
-ALL_PRED_FILE=${DATA_DIR}'final_preds_w_rd_stats.txt'
-ALL_PRED_W_GC=${DATA_DIR}'final_preds_w_rd_stats_GC.txt'
-ALL_PRED_W_GC_MAP=${DATA_DIR}'final_preds_w_rd_stats_GC_Map.txt'
-ALL_PRED_W_GC_MAP_TARG=${DATA_DIR}'final_preds_w_rd_stats_GC_Map_Targ.txt'
+ALL_PRED_FILE=${DATA_DIR}'final_preds.txt'
+ALL_PRED_W_GC=${DATA_DIR}'final_preds_GC.txt'
+ALL_PRED_W_GC_MAP=${DATA_DIR}'final_preds_GC_Map.txt'
+ALL_PRED_W_GC_MAP_TARG=${DATA_DIR}'final_preds_GC_Map_Targ.txt'
 
 last_caller_col=$((5 + ${CALLER_COUNT}))
 overlap_count_col=$((${last_caller_col} + 1))

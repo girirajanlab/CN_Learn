@@ -23,7 +23,7 @@ source /data/CN_Learn/config.params
 # STEP 0: Declare directories, files and variables #
 ####################################################
 # Files:
-ALL_PRED_W_GC_MAP_TARG=${DATA_DIR}'final_preds_w_rd_stats_GC_Map_Targ.txt'
+ALL_PRED_W_GC_MAP_TARG=${DATA_DIR}'final_preds_GC_Map_Targ.txt'
 
 
 if [ ! -f ${VAL_DATA_FILE} ];
