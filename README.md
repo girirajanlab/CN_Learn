@@ -73,6 +73,8 @@ Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers us
 
 > **bash calculate_CNV_overlap.sh**
 
+<br/><br/>
+
 ### **`Run either steps 5A & 5B together (Or) just step 5`**
 
 ### **`Step 5A:`**
@@ -86,12 +88,14 @@ Run merge_overlapping_CNVs_readdepth.sh to resolve breakpoint conflicts of conco
 
 > **bash merge_overlapping_CNVs_readdepth.sh**
 
+<br/><br/>
 
 ### **`Step 5:`**
 Run merge_overlapping_CNVs_endjoin.sh to resolve breakpoint conflicts of concordant CNVs.
 
 > **bash merge_overlapping_CNVs_endjoin.sh**
 
+<br/><br/>
 
 ### **`Step 6:`**
 Run extract_gc_map_vals.sh to extract GC content and mappability scores for singletons and breakpoint-resolved CNVs
