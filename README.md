@@ -73,7 +73,7 @@ Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers us
 
 > **bash calculate_CNV_overlap.sh**
 
-#### **Run 5A + 5B (OR) 5**
+### **`Run either steps 5A & 5B together (Or) just step 5`**
 
 ### **`Step 5A:`**
 Run generate_bp_coverage.sh to extract the basepair level coverage for each sample. Since this information can be extracted independently for each sample, make the necessary changes to this script to parallelize the process.
