@@ -11,6 +11,9 @@
 # Prereqs (Format= <FILE LOCATION> File Description):                          #
 # 1) <DATA> File with the consolidated set of CNVs from multiple callers       #
 # 2) <SOURCE> File with the list of all sample names                           #
+#                                                                              #
+# (c) 2018 - Vijay Kumar	                                               #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
 

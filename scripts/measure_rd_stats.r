@@ -6,6 +6,9 @@
 # and their corresponding flaking regions for each possible CNV start and end  #
 # coords. It then selects the endpoints with the highest (Dup) or lowest (Del) #
 # average read depth ratio as the most likely breakpoints.                     # 
+#                                                                              #
+# (c) 2018 - Vijay Kumar                                                       #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 library(sqldf)
 

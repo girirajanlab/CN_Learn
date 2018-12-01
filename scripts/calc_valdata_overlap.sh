@@ -14,6 +14,9 @@
 # 3) <SOURCE> File with dummy chromosome coordinates. This file is used to     #
 #             make sure that CNVs predicted in samples without validated CNVs  #
 #             are not ignored. Overlapping them with this file ensures it.     # 
+#                                                                              #
+# (c) 2018 - Vijay Kumar                                                       #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
 

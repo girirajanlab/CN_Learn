@@ -6,6 +6,9 @@
 # validated CNVs. This is done to handle situations where the same CNV overlap # 
 # with multiple validated CNVs. It also creates new variables that capture CNV #
 # size and validation label.                                                   #
+#                                                                              #
+# (c) 2018 - Vijay Kumar                                                       #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 options(gsubfn.engine = "R")
 library(sqldf)

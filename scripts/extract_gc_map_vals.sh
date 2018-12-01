@@ -10,6 +10,9 @@
 # 2) <SOURCE> Mappability scores file from the ENCODE project. This script     #
 #             is designed to download the source file if it is not found.      #
 # 3) <SOURCE> File with the list of exome capture probe coordinates            #
+#                                                                              #
+# (c) 2018 - Vijay Kumar                                                       #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
 

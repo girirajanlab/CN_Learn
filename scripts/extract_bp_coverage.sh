@@ -8,6 +8,9 @@
 # IMPORTANT NOTE : It takes several hours for the genomeCoverageBed command to #
 # finish for each sample. This script must be parallelized in order to get the #
 # outputs for large cohorts in a reasonable amount of time.                    #
+#                                                                              #
+# (c) 2018 - Vijay Kumar                                                       #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
 

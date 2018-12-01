@@ -6,6 +6,9 @@
 # other global values and parameters used throughout the project. i.e., they   #
 # are shared across multiple scripts. The intent is to maintain such shared    #
 # variables in a single place and source this file within each bash scripts    #
+#                                                                              #
+# (c) 2018 - Vijay Kumar                                                       #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 # 1) Main Directories
 #####################

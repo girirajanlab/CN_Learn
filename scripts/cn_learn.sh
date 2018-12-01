@@ -4,7 +4,10 @@
 # Date   : 7/25/2018                                                           #
 # This script executes the python script that takes several parameters to      #
 # build CN-Learn. The parameters include classifier type (RF, SVM, LR),        #
-# number of trees, number of splits etc                                        # 
+# number of trees, number of splits etc                                        #
+#                                                                              # 
+# (c) 2018 - Vijay Kumar                                                       #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
 

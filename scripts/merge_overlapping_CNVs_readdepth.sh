@@ -10,6 +10,9 @@
 # 2) <SOURCE> File with the list of coordinates of the exome capture probes    #
 # 3) <DATA> Files with the basepair level coverage info to measure read depth  #
 #           ratio for each potential coordinate of CNVs with concordance       #
+#                                                                              #
+# (c) 2018 - Vijay Kumar                                                       #
+# Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
 

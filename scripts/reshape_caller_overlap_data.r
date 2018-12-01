@@ -1,9 +1,12 @@
 ##############################################################################
 # Script: reshape_caller_overlap_data.r                                      #
 # Author: Vijay Kumar                                                        #
-# Date  : 7/25/2018                                                           #
+# Date  : 7/25/2018                                                          #
 # This script reshapes the overlap data obtained in the prior step using     #
 # bedtools. Specifically, it transforms row level info to column level.      #
+#                                                                            #
+# (c) 2018 - Vijay Kumar                                                     #
+# Licenced under the GNU General Public License 3.0.                         #
 ##############################################################################
 library(reshape2)
 library(sqldf)
