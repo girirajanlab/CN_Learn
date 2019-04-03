@@ -14,7 +14,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/CN_Learn/config.params
+source TBD/config.params
 
 for sample in `cat ${SAMPLE_LIST}`;
 do

@@ -12,10 +12,11 @@
 ################################################################################
 # 1) Main Directories
 #####################
-PROJ_DIR='/data/CN_Learn/'
+PROJ_DIR=TBD
 SCRIPTS_DIR=${PROJ_DIR}'scripts/'
 SOURCE_DIR=${PROJ_DIR}'source/'
 DATA_DIR=${PROJ_DIR}'data/'
+SW_DIR=${PROJ_DIR}'software/'
 DATA_BPCOV_DIR=${DATA_DIR}'bp_coverage_dir/'
 DATA_BPCOV_DIR='/data2/RF_Model_SVIP/data/extract/bp_level_coverage/'
 BAM_FILE_DIR=${SOURCE_DIR}'bam_files/'
@@ -29,10 +30,12 @@ VALD_DIR=${DATA_DIR}'VALD_DIR/'
 ###################
 # 3) Software Tools
 ###################
-GATK_SW_DIR='/data/software/gatk/gatk-3.5/'
-BEDTOOLS_DIR='/data/software/bedtools2/bin/'
-SAMTOOLS_DIR='/data/software/samtools-1.3.1/'
-PLINK_DIR='/data/software/plinkseq-0.10/'
+GATK_SW_DIR=${SW_DIR}'gatk-3.5/'
+BEDTOOLS_DIR=${SW_DIR}'bedtools2/bin/'
+SAMTOOLS_DIR=${SW_DIR}'samtools-1.3.1/'
+PLINK_DIR=${SW_DIR}'plinkseq-0.10/'
+CLAMMS_DIR=${SW_DIR}'clamms/'
+XHMM_DIR=${SW_DIR}'xhmm/'
 
 ###############
 # 4) File Names
