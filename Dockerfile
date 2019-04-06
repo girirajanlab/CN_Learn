@@ -21,6 +21,12 @@ RUN apt-get update \
     libffi-dev \
     libxml2-dev \
     libncurses5-dev \
+    libsm6 \
+    libxrender1 \
+    libfontconfig1 \
+    libxt6 \
+    libtcl8.6 \
+    libtk8.6 \
     python3-pip \
     && add-apt-repository ppa:webupd8team/java -y \
     && apt-get update \
@@ -30,11 +36,13 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y
 
-# Install the required R packages and CODEX
-RUN R -e "install.packages(c('fs', 'usethis', 'pkgload', 'xml2'), dependencies = TRUE, repos='http://cran.rstudio.com/')" && \
-    R -e "install.packages('devtools', dependencies = TRUE, repos='http://cran.rstudio.com/')" && \
-    R -e "install.packages('matrixStats', dependencies = TRUE, repos='http://cran.rstudio.com/')" && \
-    R -e "install.packages(c('plyr', 'caret', 'scales', 'sqldf', 'reshape2'), repos='http://cran.rstudio.com/')" && \
+# Install all the required R packages
+RUN R -e "install.packages(c('Rcpp', 'fs', 'usethis'), repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages(c('pkgload', 'xml2', 'htmltools'), repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('devtools', repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages(c('nnls', 'Hmisc', 'mgcv', 'plyr'), repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages(c('sqldf', 'matrixStats'), repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('caret', repos='http://cran.rstudio.com/')" && \
     R -e "source('https://bioconductor.org/biocLite.R'); biocLite('Biostrings'); biocLite('rtracklayer'); \
           biocLite('GenomeInfoDb'); biocLite('IRanges'); biocLite('BSgenome'); biocLite('GenomicAlignments'); \
           biocLite('BiocParallel')" && \
@@ -51,7 +59,7 @@ RUN wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz && \
     cd Python-3.7.3 && \
     ./configure && make && make install
 
-# Install PIP
+# Install all the required python packages using PIP3
 RUN pip3 install -U 'numpy==1.16.1' && \
     pip3 install -U 'Cython==0.27.3' && \
     pip3 install -U 'pandas==0.24.2' && \
@@ -88,17 +96,22 @@ RUN wget -c https://github.com/samtools/samtools/archive/1.3.1.tar.gz && \
 
 # Install bedtools
 WORKDIR /opt/tools/CN_Learn/software
-RUN apt-get install -y python-pip && \
+RUN apt-get install -y python-pip bedtools && \
     wget https://github.com/arq5x/bedtools2/releases/download/v2.27.1/bedtools-2.27.1.tar.gz && \
     tar -zxvf bedtools-2.27.1.tar.gz && \
     cd bedtools2 && \
     make
 
+# Install the Linux library used by KentUtils and cleanup the tar files
 WORKDIR /opt/tools/CN_Learn/software
-RUN rm gatk-3.5.tar.gz  && rm xhmm.tar.gz  && rm clamms.tar.gz && \
+RUN apt install ./libpng12-0_1.2.54_amd64.deb && \
+    rm gatk-3.5.tar.gz  && rm xhmm.tar.gz  && rm clamms.tar.gz && \
     rm Python-3.7.3.tgz && rm 1.3.2.tar.gz && rm 1.3.1.tar.gz  && \
     rm bedtools-2.27.1.tar.gz && rm plinkseq-x86_64-latest.zip
 
-WORKDIR /opt/tools 
+
+ENV CLAMMS_DIR=/opt/tools/CN_Learn/software/clamms/
+
+WORKDIR /opt/tools
 
 CMD ["/bin/bash"]
