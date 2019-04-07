@@ -2,7 +2,7 @@
 ################################################################################
 # Script : merge_overlapping_CNVs_endjoin.sh                                   # 
 # Author : Vijay Kumar                                                         #
-# Date   : 10/18/2018                                                          #
+# Date   : 4/5/2019                                                            #
 # This is the master program that merges the calls with consensus among        #
 # multiple callers and extracts additional read depth info.                    #
 # Prereqs (Format= <FILE LOCATION> File Description):                          #
@@ -16,7 +16,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source TBD/config.params
+source /data/test_installation/CN_Learn/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -45,7 +45,7 @@ cat ${TARGET_PROBES} | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $3-$2, NR}' \
 ################################################################################
 # STEP 2: Merge the overlapping calls made by multiple callers, in each sample #
 ################################################################################
-for sample in `cat ${SAMPLE_LIST} | head -10`;
+for sample in `cat ${SAMPLE_LIST} | head -1`;
 do
 
 ########################################################
@@ -59,9 +59,11 @@ cat ${DATA_DIR}${CONS_PRED_W_OV_PROP_FILE_NAME} | grep -w ${sample} \
 ################################################################################################
 # Extract the predictions for each sample and CNV type and group them based on their intervals #
 ################################################################################################
-Rscript ${SCRIPTS_DIR}generate_interval_combo.r  ${PRED_DIR}  ${sample}_${cnv_type}_preds.txt \
-        ${sample}_${cnv_type}_preds_w_grps.txt  ${sample}_${cnv_type}_grouped_preds.txt \
-        ${sample}_${cnv_type}_preds_all_intvl_combos.txt  ${CALLER_COUNT}  ${CALLER_LIST}
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+Rscript ${RSCRIPTS_DIR}generate_interval_combo.r  ${PRED_DIR} \
+            ${sample}_${cnv_type}_preds.txt \
+            ${sample}_${cnv_type}_preds_w_grps.txt  ${sample}_${cnv_type}_grouped_preds.txt \
+            ${sample}_${cnv_type}_preds_all_intvl_combos.txt  ${CALLER_COUNT}  ${CALLER_LIST}
 
 done
 done
@@ -86,9 +88,9 @@ touch ${DATA_DIR}extn_grouped_preds.txt
 
 #############################################################
 # STEP 4: Loop through each sample and CNV type to generate #
-#         teo separate/consolidated output files.           #
+#         two separate/consolidated output files.           #
 #############################################################
-for sample in `cat ${SAMPLE_LIST} | head -10`;
+for sample in `cat ${SAMPLE_LIST} | head -1`;
 do
 for cnv_type in "DEL" "DUP";
 do
@@ -104,9 +106,10 @@ concordance_column=$((${last_caller_column} + 1))
 col_after_conc_column=$((${concordance_column} + 1))
 
 
-awk -v OFS='\t' -v conc_col=${concordance_column} '{if ($conc_col != 1) print $1,$2,$3,$4,$5,"CONSENSUS";}' ${DATA_DIR}extn_grouped_preds.txt  > ${DATA_DIR}extn_grouped_conc_preds.txt 
-awk -v conc_col=${concordance_column} '{if ($conc_col == 1) print $0;}' ${DATA_DIR}extn_grouped_preds.txt  > ${DATA_DIR}extn_grouped_nonconc_preds.txt
-
+awk -v OFS='\t' -v conc_col=${concordance_column} '{if ($conc_col != 1) print $1,$2,$3,$4,$5,"CONSENSUS";}' \
+                                 ${DATA_DIR}extn_grouped_preds.txt  > ${DATA_DIR}extn_grouped_conc_preds.txt 
+awk -v conc_col=${concordance_column} '{if ($conc_col == 1) print $0;}' ${DATA_DIR}extn_grouped_preds.txt  \
+                                 > ${DATA_DIR}extn_grouped_nonconc_preds.txt
 
 if [ -f ${DATA_DIR}CONSENSUS_caller_ov.txt ];
 then
@@ -114,38 +117,51 @@ rm ${DATA_DIR}CONSENSUS_caller_ov.txt
 fi
 touch ${DATA_DIR}CONSENSUS_caller_ov.txt
 
-for sample in `cat ${SAMPLE_LIST} | head -10`;
+for sample in `cat ${SAMPLE_LIST} | head -1`;
 do
 for cnv_type in "DUP" "DEL";
 do
-cat ${DATA_DIR}extn_grouped_conc_preds.txt | grep -w ${sample} | grep ${cnv_type} > ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt;
+cat ${DATA_DIR}extn_grouped_conc_preds.txt | grep -w ${sample} | grep ${cnv_type} \
+                                  > ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt;
 
 for caller in ${CALLER_LIST};
 do
 
 if [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
 then
+
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
-                                 -b ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
-                                 | awk -v OFS='\t' '{if ($8 > 0) print $0;}' >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
+                                     -b ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
+                                     | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
+                                     | awk -v OFS='\t' '{if ($8 > 0) print $0;}' \
+                                     >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
 
 elif [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ ! -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
 then
+
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
-                                 -b ${SOURCE_DIR}dummy.bed | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
-                                 | awk -v OFS='\t' '{if ($8 > 0) print $0;}' >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
+                                     -b ${SOURCE_DIR}dummy.bed \
+                                     | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
+                                     | awk -v OFS='\t' '{if ($8 > 0) print $0;}' \
+                                     >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
 fi
 
 done
 done
 done
 
-Rscript --vanilla ${SCRIPTS_DIR}reshape_caller_overlap_data.r  ${DATA_DIR} \
-                  ${DATA_DIR}CONSENSUS_caller_ov.txt  ${DATA_DIR}CONSENSUS_caller_ov_prop.txt \
-                  ${CALLER_COUNT} ${CALLER_LIST}
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  ${DATA_DIR} \
+                      ${DATA_DIR}CONSENSUS_caller_ov.txt  \
+                      ${DATA_DIR}CONSENSUS_caller_ov_prop.txt \
+                      ${CALLER_COUNT} ${CALLER_LIST}
 
-cut -f6,7 --complement ${DATA_DIR}CONSENSUS_caller_ov_prop.txt > ${DATA_DIR}final_preds.txt
-cut -f6 --complement ${DATA_DIR}extn_grouped_nonconc_preds.txt >> ${DATA_DIR}final_preds.txt
+
+echo ${col_after_conc_column}
+cut -f6,7   --complement ${DATA_DIR}CONSENSUS_caller_ov_prop.txt > ${DATA_DIR}final_preds.txt
+cut -f6,${col_after_conc_column}  --complement ${DATA_DIR}extn_grouped_nonconc_preds.txt >> ${DATA_DIR}final_preds.txt
 
 
 echo "Job ended on `hostname` at `date`"

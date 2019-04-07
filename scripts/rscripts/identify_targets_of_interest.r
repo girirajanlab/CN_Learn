@@ -1,7 +1,7 @@
 ################################################################################
 # Script : identify_targets_of_interest.r                                      #
 # Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           #
+# Date   : 4/5/2019                                                            #
 # This script identifies the probes in the left and right flanking regions of  #
 # each predicted CNV to facilitate the calculation of read depth ratio between #
 # the predicted and their corresponding flanking regions.                      #

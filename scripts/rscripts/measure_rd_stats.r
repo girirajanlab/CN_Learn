@@ -1,7 +1,7 @@
 ################################################################################
 # Script : measure_rd_stats.r                                                  #
 # Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           #
+# Date   : 4/5/2019                                                            #
 # This script calculates the average read depth within the predicted regions   #
 # and their corresponding flaking regions for each possible CNV start and end  #
 # coords. It then selects the endpoints with the highest (Dup) or lowest (Del) #

@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################
 # Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           #
+# Date   : 4/5/2019                                                            #
 # This script executes the python script that takes several parameters to      #
 # build CN-Learn. The parameters include classifier type (RF, SVM, LR),        #
 # number of trees, number of splits etc                                        #
@@ -11,7 +11,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source TBD/config.params
+source /data/test_installation/CN_Learn/config.params
 
 #########################################
 # STEP 0: Declare variables required    #
@@ -23,8 +23,9 @@ NUM_TREES=100
 ##########################################
 # STEP 2: Run CN-Learn for each strategy #
 ##########################################
-python -u ${SCRIPTS_DIR}cn_learn.py  ${DATA_DIR}  training_data.txt  test_data.txt \
-          ${CLASSIFIER}  ${LOWER_SIZE_LIMIT}  ${UPPER_SIZE_LIMIT}  ${NUM_TREES} \
-          ${CALLER_COUNT}  ${CALLER_LIST}
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+python3 -u ${SCRIPTS_DIR}cn_learn.py  ${DATA_DIR}  training_data.txt  test_data.txt \
+              ${CLASSIFIER}  ${LOWER_SIZE_LIMIT}  ${UPPER_SIZE_LIMIT}  ${NUM_TREES} \
+              ${CALLER_COUNT}  ${CALLER_LIST}
 
 echo "Job ended on `hostname` at `date`"

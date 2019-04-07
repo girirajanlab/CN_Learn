@@ -2,7 +2,7 @@
 ################################################################################
 # Script : calc_valdata_overlap.sh                                             #
 # Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           #
+# Date   : 4/5/2019                                                            #
 # This script takes each breakpoint-resolved CNV after and identifies the ones #
 # that fall in regions covered by SNP array probes. Selected CNVs are then     #
 # labelled based on their overlap with the set of microarray validated CNVs.   #
@@ -20,7 +20,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source TBD/config.params
+source /data/test_installation/CN_Learn/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -54,10 +54,12 @@ cat ${VAL_DATA_FILE} | grep -w ${SAMPLE} | grep ${CNV_TYPE}  > ${VALD_DIR}${SAMP
 
 if [ -s ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt ] && [ -s ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt ];
 then 
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -f ${VALDATA_OV_THRESHOLD} -a ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt   \
                        -b ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt >> ${DATA_DIR}overlap_w_valdata.txt;
 elif [ -s ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt ] && [ ! -s ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt ];
 then
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -f ${VALDATA_OV_THRESHOLD} -a ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt   \
                        -b ${SOURCE_DIR}dummy.bed >> ${DATA_DIR}overlap_w_valdata.txt;
 fi
@@ -81,7 +83,8 @@ done
 ##############################################################################################
 # STEP 3: Loop through the files to group predictions and append labels and prediction sizes #
 ##############################################################################################
-Rscript ${SCRIPTS_DIR}consolidate_val_ov.r  ${DATA_DIR}  overlap_w_valdata.txt \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+Rscript ${RSCRIPTS_DIR}consolidate_val_ov.r  ${DATA_DIR}  overlap_w_valdata.txt \
         test_data_temp.txt  training_data.txt  test_data.txt  ${CALLER_COUNT}  ${CALLER_LIST}
 
 

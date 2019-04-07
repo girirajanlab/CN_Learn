@@ -1,12 +1,12 @@
-############################################################
-# Author: Vijay Kumar
-# Date  : 5/3/2018
-# This script is supplied as part of the CANOES pipeline.
-# It has been modified to take in parameters from the shell 
-# script. It has been made more readable with additional 
-# comments. It also sources the R script CANOES.R from the
-# scripts directory
-############################################################
+#############################################################
+# Author: Vijay Kumar                                       #
+# Date  : 4/5/2019                                          #
+# This script is supplied as part of the CANOES pipeline.   #
+# It has been modified to take in parameters from the shell # 
+# script. It has been made more readable with additional    # 
+# comments. It also sources the R script CANOES.R from the  #
+# scripts directory.                                        #
+#############################################################
 ############################################################################
 # STEP 1: Fetch the directory locations and file names from the shell script
 ############################################################################

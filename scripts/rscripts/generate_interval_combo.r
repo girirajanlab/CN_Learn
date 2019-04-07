@@ -1,7 +1,7 @@
 ###############################################################################
 # Script : generate_interval_combo.r                                          #
 # Author : Vijay Kumar                                                        # 
-# Date   : 7/25/2018                                                          #
+# Date   : 4/5/2019                                                           #
 # This script implements the algorithm that identifies CNVs that overlap and  #
 # groups them together. Once the calls are grouped, it generates all possible #
 # start and end coordinates based on the CNV coordinates within each group.   #

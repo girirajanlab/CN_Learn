@@ -2,7 +2,7 @@
 ################################################################################
 # Script : merge_overlapping_CNVs_readdepth.sh                                 # 
 # Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           #
+# Date   : 4/5/2019                                                            #
 # This is the master program that merges the calls with consensus among        #
 # multiple callers and extracts additional read depth info.                    #
 # Prereqs (Format= <FILE LOCATION> File Description):                          #
@@ -16,7 +16,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source TBD/config.params
+source /data/test_installation/CN_Learn/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -36,13 +36,14 @@ then
     exit 1;
 fi
 
-for sample in `cat ${SAMPLE_LIST} | head -10`;
+for sample in `cat ${SAMPLE_LIST} | head -1`;
 do
     if [ ! -f ${DATA_BPCOV_DIR}${sample}.bpcov.bed ];
     then
         echo "ERROR : The file with basepair level coverage is missing for one ";
         echo "or more samples. Make sure the coverage file for each sample is  ";
         echo "available and rerun the script.";
+        exit 1;
     fi
 done
 
@@ -55,7 +56,7 @@ cat ${TARGET_PROBES} | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $3-$2, NR}' \
 ################################################################################
 # STEP 2: Merge the overlapping calls made by multiple callers, in each sample #
 ################################################################################
-for sample in `cat ${SAMPLE_LIST} | head -10`;
+for sample in `cat ${SAMPLE_LIST} | head -1`;
 do
 
 ########################################################
@@ -66,19 +67,30 @@ do
 cat ${DATA_DIR}${CONS_PRED_W_OV_PROP_FILE_NAME} | grep -w ${sample} \
     | grep ${cnv_type} > ${PRED_DIR}${sample}_${cnv_type}_preds.txt
 
-################################################################################################
-# Extract the predictions for each sample and CNV type and group them based on their intervals #
-################################################################################################
-Rscript ${SCRIPTS_DIR}generate_interval_combo.r  ${PRED_DIR}  ${sample}_${cnv_type}_preds.txt \
-        ${sample}_${cnv_type}_preds_w_grps.txt  ${sample}_${cnv_type}_grouped_preds.txt \
-        ${sample}_${cnv_type}_preds_all_intvl_combos.txt  ${CALLER_COUNT}  ${CALLER_LIST}
-${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${sample}_${cnv_type}_preds_all_intvl_combos.txt \
-                                 -b ${PRED_DIR}${TARGET_PROBES_W_LEN_ID} \
-                                 > ${PRED_DIR}${sample}_${cnv_type}_preds_all_intvl_targs.txt
-Rscript ${SCRIPTS_DIR}identify_targets_of_interest.r  ${PRED_DIR} \
-        ${sample}_${cnv_type}_preds_all_intvl_targs.txt  ${TARGET_PROBES_W_LEN_ID} \
-        ${sample}_${cnv_type}_all_intvl_info.txt  ${sample}_${cnv_type}_targets_of_interest.txt \
-        ${CALLER_COUNT} ${CALLER_LIST}
+#######################################################################
+# Extract the predictions for each sample and CNV type and group them #
+# based on their intervals.                                           #   
+#######################################################################
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+Rscript ${RSCRIPTS_DIR}generate_interval_combo.r ${PRED_DIR}  \
+            ${sample}_${cnv_type}_preds.txt \
+            ${sample}_${cnv_type}_preds_w_grps.txt  \
+            ${sample}_${cnv_type}_grouped_preds.txt \
+            ${sample}_${cnv_type}_preds_all_intvl_combos.txt  \
+            ${CALLER_COUNT}  ${CALLER_LIST}
+
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+${BEDTOOLS_DIR}intersectBed -wao \
+            -a ${PRED_DIR}${sample}_${cnv_type}_preds_all_intvl_combos.txt \
+            -b ${PRED_DIR}${TARGET_PROBES_W_LEN_ID} \
+            > ${PRED_DIR}${sample}_${cnv_type}_preds_all_intvl_targs.txt
+
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+Rscript ${RSCRIPTS_DIR}identify_targets_of_interest.r  ${PRED_DIR} \
+            ${sample}_${cnv_type}_preds_all_intvl_targs.txt  ${TARGET_PROBES_W_LEN_ID} \
+            ${sample}_${cnv_type}_all_intvl_info.txt  \
+            ${sample}_${cnv_type}_targets_of_interest.txt \
+            ${CALLER_COUNT} ${CALLER_LIST}
 
 ################################################################################################
 # Generate separate files with probe information for predicted and left/right flanking regions #
@@ -107,16 +119,20 @@ cat ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info.txt | \
 ################################################
 # Extract coverage for each target of interest #
 ################################################
-${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${sample}_${cnv_type}_targets_of_interest.txt \
-                                 -b ${DATA_BPCOV_DIR}${sample}.bpcov.bed \
-                                 > ${PRED_DIR}${sample}_${cnv_type}_targets_of_interest_w_cov.txt
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+${BEDTOOLS_DIR}intersectBed -wao \
+            -a ${PRED_DIR}${sample}_${cnv_type}_targets_of_interest.txt \
+            -b ${DATA_BPCOV_DIR}${sample}.bpcov.bed \
+            > ${PRED_DIR}${sample}_${cnv_type}_targets_of_interest_w_cov.txt
 
-Rscript ${SCRIPTS_PRE_DIR}measure_rd_stats.r  ${PRED_DIR} \
-        ${sample}_${cnv_type}_all_intvl_info_left_flank.txt  \
-        ${sample}_${cnv_type}_all_intvl_info_pred_region.txt \
-        ${sample}_${cnv_type}_all_intvl_info_right_flank.txt \
-        ${sample}_${cnv_type}_targets_of_interest_w_cov.txt  ${sample}_${cnv_type}_w_rd_stats.txt \
-        ${CALLER_COUNT} ${CALLER_LIST}
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+Rscript ${RSCRIPTS_DIR}measure_rd_stats.r  ${PRED_DIR} \
+            ${sample}_${cnv_type}_all_intvl_info_left_flank.txt  \
+            ${sample}_${cnv_type}_all_intvl_info_pred_region.txt \
+            ${sample}_${cnv_type}_all_intvl_info_right_flank.txt \
+            ${sample}_${cnv_type}_targets_of_interest_w_cov.txt  \
+            ${sample}_${cnv_type}_w_rd_stats.txt \
+            ${CALLER_COUNT} ${CALLER_LIST}
 
 done
 done
@@ -155,7 +171,7 @@ touch ${DATA_DIR}final_preds.txt
 # STEP 4: Loop through each sample and CNV type to generate #
 #         four separate/consolidated output files.          #
 #############################################################
-for sample in `cat ${SAMPLE_LIST} | head -10`;
+for sample in `cat ${SAMPLE_LIST} | head -1`;
 do
 for cnv_type in "DEL" "DUP";
 do

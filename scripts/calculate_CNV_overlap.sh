@@ -2,7 +2,7 @@
 ################################################################################
 # Script : calculate_CNV_overlap.sh                                            #
 # Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           #
+# Date   : 4/5/2019                                                            #
 # This script calculates the overlap between CNVs predicted by multiple        #
 # callers. Once the overlaps are measured, data is reshaped, and the number    #
 # of targets each CNV overlaps with is then calculated. This script is written #                      
@@ -17,7 +17,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source TBD/config.params
+source /data/test_installation/CN_Learn/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -30,6 +30,13 @@ CONS_PRED_W_OV_PROP_FILE_NAME='cons_calls_w_caller_ov_prop.bed'
 CONS_PRED_FILE=${DATA_DIR}${CONS_PRED_FILE_NAME}
 CONS_PRED_W_VAL_FILE=${DATA_DIR}${CONS_PRED_W_VALS_FILE_NAME}
 CONS_PRED_W_OV_FILE=${DATA_DIR}${CONS_PRED_W_OV_FILE_NAME}
+
+
+###################################################################################
+# Step 0: Merge the input CNV call files from multiple callers into a single file #
+###################################################################################
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+Rscript --vanilla ${RSCRIPTS_DIR}merge_init_preds.r ${DATA_DIR} ${CONS_PRED_FILE_NAME}
 
 ################################################################################
 # Step 1: Make sure the data/format of the input file is consistent & accurate #
@@ -80,7 +87,7 @@ fi
 if [ ! -f ${SAMPLE_LIST} ];
 then
     echo "ERROR : The input file with the list of samples to process is unavailable.";
-    echo "Please place this file in the SOURCE directory and try again."
+    echo "Please ensure the presence of this file in the SOURCE directory and try again."
     exit 1;
 fi
 
@@ -88,13 +95,23 @@ fi
 # STEP 2: Run bedtools to identify predictions between callers that overlap.   #
 #         Three nested loops to process  1) Caller 2) Sample 3) CNV Type.      #
 ################################################################################
+if [ -f ${CONS_PRED_W_OV_FILE} ];
+then
 rm ${CONS_PRED_W_OV_FILE}
+fi
 touch ${CONS_PRED_W_OV_FILE}
+
+
 for caller in ${CALLER_LIST};
 do
+
+if [ -f ${DATA_DIR}${caller}_caller_ov.txt ];
+then
 rm ${DATA_DIR}${caller}_caller_ov.txt
+fi
 touch ${DATA_DIR}${caller}_caller_ov.txt
-for sample in `cat ${SAMPLE_LIST} | head -10`; 
+
+for sample in `cat ${SAMPLE_LIST}`; 
 do
 for cnv_type in "DUP" "DEL";
 do 
@@ -102,30 +119,35 @@ cat ${CONS_PRED_FILE} | grep ${caller} | grep -w ${sample} | grep ${cnv_type} \
                              > ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt; 
 cat ${CONS_PRED_FILE} | grep -w ${sample} | grep ${cnv_type} \
                   > ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt; 
+
 if [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
    [ -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then 
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
-                                 -b ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt \
-                                 | cut -f1-6,12,13 >> ${DATA_DIR}${caller}_caller_ov.txt;
+                                     -b ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt \
+                                     | cut -f1-6,12,13 >> ${DATA_DIR}${caller}_caller_ov.txt;
 elif [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
      [ ! -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
-                                 -b ${SOURCE_DIR}dummy.bed | cut -f1-6,12,13 \
-                                 >> ${DATA_DIR}${caller}_caller_ov.txt;
+                                     -b ${SOURCE_DIR}dummy.bed | cut -f1-6,12,13 \
+                                     >> ${DATA_DIR}${caller}_caller_ov.txt;
 fi
 done
 done
 cat ${DATA_DIR}${caller}_caller_ov.txt >> ${CONS_PRED_W_OV_FILE}
 done  
 
-
 ################################################################################
 # STEP 3: Run the R script to reshape the overlap info from rows to columns.   #
 ################################################################################
-Rscript --vanilla ${SCRIPTS_DIR}reshape_caller_overlap_data.r  ${DATA_DIR} \
-                  ${CONS_PRED_W_OV_FILE_NAME} ${CONS_PRED_W_OV_PROP_FILE_NAME} \
-                  ${CALLER_COUNT} ${CALLER_LIST}
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  \
+                                   ${DATA_DIR} ${CONS_PRED_W_OV_FILE_NAME} \
+                                   ${CONS_PRED_W_OV_PROP_FILE_NAME} \
+                                   ${CALLER_COUNT} ${CALLER_LIST}
+
 
 echo "Job ended on `hostname` at `date`"

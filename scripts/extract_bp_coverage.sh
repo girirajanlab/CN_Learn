@@ -1,31 +1,29 @@
 #!/bin/bash
-################################################################################
-# Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           #
-# This script calculates basepair level coverage information for each sample.  #
-# This information is used later to resolve breakpoints of concordant CNVs.    #
-#                                                                              #
-# IMPORTANT NOTE : It takes several hours for the genomeCoverageBed command to #
-# finish for each sample. This script must be parallelized in order to get the #
-# outputs for large cohorts in a reasonable amount of time.                    #
-#                                                                              #
-# (c) 2018 - Vijay Kumar                                                       #
-# Licenced under the GNU General Public License 3.0.                           #
-################################################################################
+########################################################################
+# Author : Vijay Kumar                                                 #
+# Date   : 4/5/2019                                                    #
+# This script calculates basepair level coverage information for       #
+# each sample. This information is used later to resolve breakpoints   #
+# of concordant CNVs                                                   #
+#                                                                      #
+# (c) 2018 - Vijay Kumar	                                       #
+# Licenced under the GNU General Public License 3.0.                   #
+########################################################################
 echo "Job started on `hostname` at `date`"
 
-source TBD/config.params
+source /data/test_installation/CN_Learn/config.params
 
-for sample in `cat ${SAMPLE_LIST}`;
+##################################################################
+# STEP 1: Calculate actual and normalized coverage for each sample 
+##################################################################
+for file_loc in `cat ${BAM_FILE_LIST_W_PATH}`;
 do
 
-if [ ! -s ${DATA_BPCOV_DIR}${sample}.bpcov.bed ];
-then
-${BEDTOOLS_DIR}genomeCoverageBed -ibam ${BAM_FILE_DIR}${sample}.bam -bga \
-                                     > ${DATA_BPCOV_DIR}${sample}.bpcov.bed
-fi
+sample_name=`echo ${file_loc} | rev | cut -f1 -d/| rev`
 
-done
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+${BEDTOOLS_DIR}genomeCoverageBed -ibam ${file_loc} -bga \
+                   > ${DATA_BPCOV_DIR}${sample_name}.bpcov.bed
 
 echo "Job ended on `hostname` at `date`"
 
