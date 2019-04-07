@@ -2,12 +2,13 @@
 # Script : consolidate_val_ov.r                                                #
 # Author : Vijay Kumar                                                         #
 # Date   : 4/5/2019                                                            #
+#                                                                              #
 # This script groups the final set of CNVs after they are labelled using       #
 # validated CNVs. This is done to handle situations where the same CNV overlap # 
 # with multiple validated CNVs. It also creates new variables that capture CNV #
 # size and validation label.                                                   #
 #                                                                              #
-# (c) 2018 - Vijay Kumar                                                       #
+# (c) 2019 - Vijay Kumar                                                       #
 # Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 options(gsubfn.engine = "R")
