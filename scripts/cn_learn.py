@@ -2,11 +2,12 @@
 # Script : cn_learn.py                                                         # 
 # Author : Vijay Kumar                                                         #
 # Date   : 4/5/2019                                                            #
+#                                                                              #
 # This script takes a list of labelled CNVs as input to train CN-Learn. It     #
 # takes several input parameters from the bash script to make predictions on   #
 # CNVs predicted from new samples.                                             #
 #                                                                              #
-# (c) 2018 - Vijay Kumar                                                       #
+# (c) 2019 - Vijay Kumar                                                       #
 # Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 from __future__ import division
