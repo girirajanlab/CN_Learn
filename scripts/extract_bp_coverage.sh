@@ -1,12 +1,14 @@
 #!/bin/bash
 ########################################################################
+# Script : extract_bp_coverage.sh                                      #
 # Author : Vijay Kumar                                                 #
 # Date   : 4/5/2019                                                    #
+#                                                                      #
 # This script calculates basepair level coverage information for       #
 # each sample. This information is used later to resolve breakpoints   #
-# of concordant CNVs                                                   #
+# of concordant CNVs.                                                  #
 #                                                                      #
-# (c) 2018 - Vijay Kumar	                                       #
+# (c) 2019 - Vijay Kumar	                                       #
 # Licenced under the GNU General Public License 3.0.                   #
 ########################################################################
 echo "Job started on `hostname` at `date`"
@@ -21,7 +23,7 @@ do
 
 sample_name=`echo ${file_loc} | rev | cut -f1 -d/| rev`
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}genomeCoverageBed -ibam ${file_loc} -bga \
                    > ${DATA_BPCOV_DIR}${sample_name}.bpcov.bed
 

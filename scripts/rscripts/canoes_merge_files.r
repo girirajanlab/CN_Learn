@@ -5,7 +5,7 @@
 # It has been modified to take in parameters from the shell # 
 # script. It has been made more readable with additional    # 
 # comments. It also sources the R script CANOES.R from the  #
-# scripts directory.                                        #
+# rscripts directory.                                       #
 #############################################################
 ############################################################################
 # STEP 1: Fetch the directory locations and file names from the shell script

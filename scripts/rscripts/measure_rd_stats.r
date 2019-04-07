@@ -2,12 +2,13 @@
 # Script : measure_rd_stats.r                                                  #
 # Author : Vijay Kumar                                                         #
 # Date   : 4/5/2019                                                            #
+#                                                                              #
 # This script calculates the average read depth within the predicted regions   #
 # and their corresponding flaking regions for each possible CNV start and end  #
 # coords. It then selects the endpoints with the highest (Dup) or lowest (Del) #
 # average read depth ratio as the most likely breakpoints.                     # 
 #                                                                              #
-# (c) 2018 - Vijay Kumar                                                       #
+# (c) 2019 - Vijay Kumar                                                       #
 # Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 library(sqldf)
@@ -29,12 +30,11 @@ for (caller_number in 1:caller_count){
     caller_list[caller_number] <- args[7 + caller_number]
 } 
 
-setwd(calls_dir)
-
 ################################################################
 # STEP 2: Create dataframes for the three separate regions and #
 #         for read depth in exome capture targets              #
 ################################################################
+setwd(calls_dir)
 left_flank_df <- as.data.frame(read.table(left_flank_file))
 pred_region_df <- as.data.frame(read.table(pred_region_file))
 right_flank_df <- as.data.frame(read.table(right_flank_file))

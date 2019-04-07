@@ -3,6 +3,7 @@
 # Script : extract_gc_map_vals.sh                                              # 
 # Author : Vijay Kumar                                                         #
 # Date   : 4/5/2019                                                            #
+#                                                                              #
 # This script extracts GC content and mappability scores for the set of CNV    #
 # predictions after the overlapping calls are merged together.                 #
 # Prereqs (Format= <DIRECTORY_NAME> File Description):                         #
@@ -11,7 +12,7 @@
 #             is designed to download the source file if it is not found.      #
 # 3) <SOURCE> File with the list of exome capture probe coordinates            #
 #                                                                              #
-# (c) 2018 - Vijay Kumar                                                       #
+# (c) 2019 - Vijay Kumar                                                       #
 # Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
@@ -50,7 +51,7 @@ rd_ratio_col=$((${last_caller_col} + 3))
 gc_content_col=$((${rd_ratio_col} + 2))
 cnv_size_col=$((${gc_content_col} + 7))
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}bedtools nuc -fi ${REF_GENOME} -bed ${ALL_PRED_FILE} | tail -n +2 | \
          cut -f1-${overlap_count_col},${rd_ratio_col},${gc_content_col},${cnv_size_col} > ${ALL_PRED_W_GC}
 
@@ -63,7 +64,7 @@ cat -n ${ALL_PRED_W_GC} | awk '{printf "%s\t%s\t%s\t%s\n", "chr"$2, $3, $4, $1}'
 ######################################################################################################
 # Extract only the mappability score column along with the unique identifier column; sort the output #
 ######################################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${SW_DIR}bigWigAverageOverBed ${SOURCE_DIR}wgEncodeCrgMapabilityAlign100mer.bigWig \
                                   ${DATA_DIR}cons_pred_intvls_four_cols.bed ${DATA_DIR}map_output.tab
 
@@ -80,7 +81,7 @@ paste -d'\t' ${ALL_PRED_W_GC} ${DATA_DIR}sorted_map_scores | \
 # with each predicted CNV region. This is needed to ignore CNVs   #
 # that do not overlap with atleast one target probe.              #
 ###################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -c -a ${ALL_PRED_W_GC_MAP} -b ${TARGET_PROBES} \
                                                    > ${ALL_PRED_W_GC_MAP_TARG}
 
@@ -93,7 +94,7 @@ cnv_size_col=$((${gc_content_col} + 7))
 ###########################################################
 # STEP 2 (End join): Extract GC content for each interval #
 ###########################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}bedtools nuc -fi ${REF_GENOME} -bed ${ALL_PRED_FILE} | tail -n +2 | \
          cut -f1-${overlap_count_col},${gc_content_col},${cnv_size_col} > ${ALL_PRED_W_GC}
 
@@ -106,7 +107,7 @@ cat -n ${ALL_PRED_W_GC} | awk '{printf "%s\t%s\t%s\t%s\n", "chr"$2, $3, $4, $1}'
 ######################################################################################################
 # Extract only the mappability score column along with the unique identifier column; sort the output #
 ######################################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${SW_DIR}bigWigAverageOverBed ${SOURCE_DIR}wgEncodeCrgMapabilityAlign100mer.bigWig \
                                   ${DATA_DIR}cons_pred_intvls_four_cols.bed ${DATA_DIR}map_output.tab
 
@@ -123,11 +124,10 @@ paste -d'\t' ${ALL_PRED_W_GC} ${DATA_DIR}sorted_map_scores | \
 # with each predicted CNV region. This is needed to ignore CNVs   #
 # that do not overlap with atleast one target probe.              #
 ###################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -c -a ${ALL_PRED_W_GC_MAP} -b ${TARGET_PROBES} \
                                                    > ${ALL_PRED_W_GC_MAP_TARG}
 
 fi
-
 
 echo "Job ended on `hostname` at `date`" 

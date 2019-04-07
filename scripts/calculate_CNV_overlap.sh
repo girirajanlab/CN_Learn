@@ -3,6 +3,7 @@
 # Script : calculate_CNV_overlap.sh                                            #
 # Author : Vijay Kumar                                                         #
 # Date   : 4/5/2019                                                            #
+#                                                                              #
 # This script calculates the overlap between CNVs predicted by multiple        #
 # callers. Once the overlaps are measured, data is reshaped, and the number    #
 # of targets each CNV overlaps with is then calculated. This script is written #                      
@@ -12,7 +13,7 @@
 # 1) <DATA> File with the consolidated set of CNVs from multiple callers       #
 # 2) <SOURCE> File with the list of all sample names                           #
 #                                                                              #
-# (c) 2018 - Vijay Kumar	                                               #
+# (c) 2019 - Vijay Kumar	                                               #
 # Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
@@ -35,7 +36,7 @@ CONS_PRED_W_OV_FILE=${DATA_DIR}${CONS_PRED_W_OV_FILE_NAME}
 ###################################################################################
 # Step 0: Merge the input CNV call files from multiple callers into a single file #
 ###################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 Rscript --vanilla ${RSCRIPTS_DIR}merge_init_preds.r ${DATA_DIR} ${CONS_PRED_FILE_NAME}
 
 ################################################################################
@@ -123,14 +124,14 @@ cat ${CONS_PRED_FILE} | grep -w ${sample} | grep ${cnv_type} \
 if [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
    [ -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
                                      -b ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt \
                                      | cut -f1-6,12,13 >> ${DATA_DIR}${caller}_caller_ov.txt;
 elif [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
      [ ! -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
                                      -b ${SOURCE_DIR}dummy.bed | cut -f1-6,12,13 \
                                      >> ${DATA_DIR}${caller}_caller_ov.txt;
@@ -143,7 +144,7 @@ done
 ################################################################################
 # STEP 3: Run the R script to reshape the overlap info from rows to columns.   #
 ################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  \
                                    ${DATA_DIR} ${CONS_PRED_W_OV_FILE_NAME} \
                                    ${CONS_PRED_W_OV_PROP_FILE_NAME} \

@@ -2,11 +2,12 @@
 # Script : identify_targets_of_interest.r                                      #
 # Author : Vijay Kumar                                                         #
 # Date   : 4/5/2019                                                            #
+#                                                                              #
 # This script identifies the probes in the left and right flanking regions of  #
 # each predicted CNV to facilitate the calculation of read depth ratio between #
 # the predicted and their corresponding flanking regions.                      #
 #                                                                              #
-# (c) 2018 - Vijay Kumar                                                       #
+# (c) 2019 - Vijay Kumar                                                       #
 # Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 library(sqldf)
@@ -27,10 +28,10 @@ for (caller_number in 1:caller_count){
     caller_list[caller_number] <- args[6 + caller_number]
 } 
 
-setwd(data_dir)
 ##################################################################################
 # STEP 2: Identify the targets of interest and extract them from the target file #
 ##################################################################################
+setwd(data_dir)
 preds_w_targ_df <- as.data.frame(read.table(input_file_name_1))
 targets_file_df <- as.data.frame(read.table(input_file_name_2))
 

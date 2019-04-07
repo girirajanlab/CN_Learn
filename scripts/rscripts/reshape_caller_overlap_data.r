@@ -2,10 +2,11 @@
 # Script: reshape_caller_overlap_data.r                                      #
 # Author: Vijay Kumar                                                        #
 # Date  : 4/5/2019                                                           #
+#                                                                            #
 # This script reshapes the overlap data obtained in the prior step using     #
 # bedtools. Specifically, it transforms row level info to column level.      #
 #                                                                            #
-# (c) 2018 - Vijay Kumar                                                     #
+# (c) 2019 - Vijay Kumar                                                     #
 # Licenced under the GNU General Public License 3.0.                         #
 ##############################################################################
 library(reshape2)
@@ -27,10 +28,10 @@ for (caller_number in 1:caller_count){
 
 caller_cols = seq(8,(8 + caller_count - 1))
 
-setwd(input_dir)
 #################################################################
 # STEP 2: Assign column names and create other necessary columns.
 #################################################################
+setwd(input_dir)
 calls_w_ov_df <- read.table(input_file)
 colnames(calls_w_ov_df) <- c("CHR", "START", "END", "CNV_TYPE", "SAMPLE", "CALLER", "OV_CALLER", "OV_SIZE")
 calls_w_ov_df$PRED_SIZE <- calls_w_ov_df$END - calls_w_ov_df$START

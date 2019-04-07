@@ -1,8 +1,12 @@
 #################################################################################
 # Author : Vijay Kumar                                                          #
 # Date   : 4/5/2019                                                             #
+#                                                                               #
 # This script reads the outputs of the CNV calling algorithms and formats them  #
 # to ensure data consistency.                                                   #
+#                                                                               #
+# (c) 2019 - Vijay Kumar                                                        #
+# Licenced under the GNU General Public License 3.0.                            #
 #################################################################################
 options(gsubfn.engine = "R")
 library(reshape)
@@ -11,12 +15,11 @@ args = commandArgs(trailingOnly=TRUE)
 input_dir = args[1]
 output_file = args[2]
 
-#Set working directory
-setwd(input_dir)
-
 ################################
 # Copy the files to dataframes #
 ################################
+#Set working directory
+setwd(input_dir)
 canoes_calls <- as.data.frame(read.csv("canoes_calls.csv", header=TRUE))
 xhmm_calls <- as.data.frame(read.table("xhmm_calls.txt", header=TRUE))
 codex_calls <- as.data.frame(read.table("codex_calls.txt", header=TRUE))

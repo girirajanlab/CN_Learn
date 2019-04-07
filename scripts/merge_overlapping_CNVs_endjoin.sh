@@ -3,6 +3,7 @@
 # Script : merge_overlapping_CNVs_endjoin.sh                                   # 
 # Author : Vijay Kumar                                                         #
 # Date   : 4/5/2019                                                            #
+#                                                                              #
 # This is the master program that merges the calls with consensus among        #
 # multiple callers and extracts additional read depth info.                    #
 # Prereqs (Format= <FILE LOCATION> File Description):                          #
@@ -11,7 +12,7 @@
 # 3) <DATA> Files with the basepair level coverage info to measure read depth  #
 #           ratio for each potential coordinate of CNVs with concordance       #
 #                                                                              #
-# (c) 2018 - Vijay Kumar                                                       #
+# (c) 2019 - Vijay Kumar                                                       #
 # Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
 echo "Job started on `hostname` at `date`"
@@ -59,7 +60,7 @@ cat ${DATA_DIR}${CONS_PRED_W_OV_PROP_FILE_NAME} | grep -w ${sample} \
 ################################################################################################
 # Extract the predictions for each sample and CNV type and group them based on their intervals #
 ################################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 Rscript ${RSCRIPTS_DIR}generate_interval_combo.r  ${PRED_DIR} \
             ${sample}_${cnv_type}_preds.txt \
             ${sample}_${cnv_type}_preds_w_grps.txt  ${sample}_${cnv_type}_grouped_preds.txt \
@@ -130,7 +131,7 @@ do
 if [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
 then
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
                                      -b ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
                                      | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
@@ -140,7 +141,7 @@ ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.t
 elif [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ ! -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
 then
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
                                      -b ${SOURCE_DIR}dummy.bed \
                                      | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
@@ -152,7 +153,7 @@ done
 done
 done
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} girirajanlab/cnlearn \
+docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
 Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  ${DATA_DIR} \
                       ${DATA_DIR}CONSENSUS_caller_ov.txt  \
                       ${DATA_DIR}CONSENSUS_caller_ov_prop.txt \
