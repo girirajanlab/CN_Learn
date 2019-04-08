@@ -12,13 +12,13 @@ bioRxiv 460931; doi: https://doi.org/10.1101/460931
 
 
 # Software Requirements
-Given the number of softwares/tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. This docker image can be downloaded and made instantly available for use on the host machine using the following command.
-
->**docker pull girirajanlab/cnlearn**
-
-However, Docker must be installed on the host machine prior to running CN-Learn. Follow the steps provided in the [instructions](https://docs.docker.com/install/) page for the specific Linux distribution installed on the host machine. Once the installation is successful, the following command can be run to test the installation. If successful, the following command will return the current version of the docker installed on the host machine.
+Given the number of softwares/tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. Prior to running CN-Learn, Docker must installed on the host machine. Follow the steps provided in the [instructions](https://docs.docker.com/install/) page for the specific Linux distribution installed on the host machine. Once the installation is successful, the following command can be run to test the installation. If successful, the following command will return the current version of the docker installed on the host machine.
 
 > **docker version**
+
+Once docker is available, the image can then be downloaded and made instantly available for use on the host machine using the following command.
+
+>**docker pull girirajanlab/cnlearn**
 
 Following are some of the software tools preinstalled on the docker image,
 1) Python 3.7.3
