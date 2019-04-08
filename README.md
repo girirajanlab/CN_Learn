@@ -3,24 +3,6 @@ CN-Learn is a framework to integrate Copy Number Variant (CNV) predictions made 
 
 While CN-Learn has been shown to perform best when built as a ‘Random Forest’ classifier, it can also be built as a ‘Logistic Regression’ or ‘Support Vector Machine’ classifier. CN-Learn can also be seamlessly extended to include newer set of CNV calling algorithms in the future by simply changing a single parameter supplied to CN-Learn. 
 
-## Software Requirements
-Given the number of softwares and tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. Following are some of the preinstalled software tools,
-1) Python 3.7.3
-2) R 3.4.4
-3) GATK 3.5
-4) bedtools 2.27.1
-5) samtools 1.3.1
-6) CANOES, CODEX, CLAMMS, XHMM & CN-Learn
-
-The complete list of softwares preinstalled in the image is provided in the [Dockerfile](https://github.com/girirajanlab/CN_Learn/blob/master/Dockerfile).
-
-Docker must be installed using the following commands prior to running CN-Learn. Follow the steps provided in the [instructions](https://docs.docker.com/install/) page for the specific Linux distribution installed on the host machine. 
-
-If docker installation is successful, the following command would return the current version of the docker installed on the host machine.
-
-> **docker version**
-
-
 # Citation
 
 [A machine-learning approach for accurate detection of copy-number variants from exome sequencing](https://www.biorxiv.org/content/10.1101/460931v2)
@@ -29,125 +11,155 @@ Vijay Kumar, Matthew Jensen, Gopal Jayakar, Neil Kelkar, Santhosh Girirajan
 bioRxiv 460931; doi: https://doi.org/10.1101/460931
 
 
-# TLDR
->**`docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \`**
+# Software Requirements
+Given the number of softwares/tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. This docker image can be downloaded and made instantly available for use on the host machine using the following command.
 
->**`python3 cn_learn.py [DATA_DIRECTORY] [TRAINING_DATA] [TEST_DATA] [CLASSIFIER_TYPE] [LOWER_SIZE_LIMIT] [UPPER_SIZE_LIMIT] [NUMBER_OF_TREES] [CALLER_COUNT] [CALLER_LIST]`**
+>**docker pull girirajanlab/cnlearn**
 
-# Input Files
-CN-Learn takes a text file with the list of CNV predictions from multiple algorithms as its primary input and relies on five other important input files. This input files are expected to be placed in their corresponding directories without headers. Sample files for each of the following 6 files are readily provided with the project.
+However, Docker must be installed on the host machine prior to running CN-Learn. Follow the steps provided in the [instructions](https://docs.docker.com/install/) page for the specific Linux distribution installed on the host machine. Once the installation is successful, the following command can be run to test the installation. If successful, the following command will return the current version of the docker installed on the host machine.
+
+> **docker version**
+
+Following are some of the software tools preinstalled on the docker image,
+1) Python 3.7.3
+2) R 3.4.4
+3) GATK 3.5
+4) bedtools 2.27.1
+5) samtools 1.3.1
+6) CANOES, CODEX, CLAMMS, XHMM & CN-Learn
+
+The complete list of preinstalled softwares can be found in the [Dockerfile](https://github.com/girirajanlab/CN_Learn/blob/master/Dockerfile).
 
 
-# How to run CN-Learn
+# Logistics
+Running CN-Learn to identify CNVs involves the following tasks,
 
-### **`Step 1 | Clone CN-Learn repository from Github`** 
-Run the following command to clone the required scripts to the local machine.
+**1)** Clone the CN_Learn github repo to a local host LINUX machine using the following command,
+
 > **git clone --recursive https://github.com/girirajanlab/CN_Learn.git** 
 
-> **cd CN_Learn**
+**2)** Place all the BAM files, along with their corresponding index files in a local directory. Ensure the following,
 
-### **`Step 2 | Place the required input files and update the file locations in config.params file`**
-Place the three required input files and update the directory locations in the **config.params** file.
+	a) All bam files should be named <SAMPLE>.bam and the index file named <SAMPLE>.bam.bai, where <SAMPLE> is the name of the sample without any special characters in them.
+    
+    b) All bam files must have an index file associated with them.
+    
+    c) The directory with .bam and .bam.bai files should not have any other type of files in them.
+    
+**3)** Make sure the version of reference genome to which the samples were mapped to, is available in a local directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must be present in the same directory,
+   
+    a) <REFERENCE_GENOME>.fasta.fai
+    
+    b) <REFERENCE_GENOME>.dict
 
-Once the files are available, run the following script to ensure the presence, quality and consistency of the input BAM files, exome capture targets and the reference genome.
+**4)** Name the file with the list of exome capture probes as **exome_capture_targets.bed** and place the file in the **/source/** directory inside the CN_Learn repository that was just cloned.
 
-> **bash prechecks.sh**
+**5)** Update the following parameters in the config.params file in the CN_Learn directory that was just cloned;
 
-### **`Step 3 | Pull the required docker image`** 
-Run the following command to pull the required docker image.
+	a) BAM_FILE_DIR     : Replace 'TBD' with the full path of the directory with all the BAM files.
+    
+    b) REF_GENOME       : Replace 'TBD' with the full path of the directory with the reference genome.
+    
+    c) DOCKER_INDICATOR : This parameter is set to 'Y' by default. If you choose NOT to use Docker and prefer to use locally installed softwares, update this parameter to 'N' prior to running rest of the steps. 
+    
+    d) SW_DIR           : This path is set to the directory inside the Docker image. If you are NOT using docker, update this path to the location of the directory in the local file system.
+    
+**6)** If you decide to use docker, download the image using the following command,
+>**docker pull girirajanlab/cnlearn**
 
-> **docker pull girirajanlab/cnlearn**
+Run the following command and make sure that it lists the recently downloaded image,
+> **docker images**
 
-> **girirajanlab/cnlearn**
+**7)** Once all the input files are available, run the following script to ensure the presence, quality and consistency of the input BAM files, exome capture targets and the reference genome.
 
-### **`Step 3 | Predict CNVs using CANOES`**
-### **`Step 3A:`**
+> **bash prechecks.sh** 
+
+**8)** Once the prechecks.sh executes successfully without errors, follow the steps below to generate CNVs.
+
+## How to run CN-Learn?
+
+
+### **`Step 1 | Predict CNVs using CANOES`**
+### **`Step 1A:`**
 Run the following script to extract the read depth information required by CANOES to make CNV predictions.
 > **bash canoes_extract.sh**
 
-### **`Step 3B:`**
+### **`Step 1B:`**
 Run the following script to make CNV predictions using CANOES.
 > **bash canoes_call_CNVs.sh**
 
 
-### **`Step 4 | Predict CNVs using CLAMMS`**
-### **`Step 4A:`**
+### **`Step 2 | Predict CNVs using CLAMMS`**
+### **`Step 2A:`**
 Run the following script to extract the prerequisite data required by CLAMMS.
 > **bash clamms_preprocess.sh**
 
-### **`Step 4B:`**
+### **`Step 2B:`**
 Run the following script to extract read depth information required by CLAMMS to make CNV predictions.
 > **bash clamms_extract.sh**
 
-### **`Step 4C:`**
+### **`Step 2C:`**
 Run the following script to predict CNVs using CLAMMS.
 > **bash clamms_postprocess.sh**
 
 
-### **`Step 5 | Predict CNVs using CODEX`**
-### **`Step 5A:`**
+### **`Step 3 | Predict CNVs using CODEX`**
+### **`Step 3A:`**
 Run the following script to extract the read depth information required by CODEX to make CNV predictions.
 > **bash codex_extract.sh**
 
-### **`Step 5B:`**
+### **`Step 3B:`**
 Run the following script to generate a consolidated output file with the list of CNV calls.
 > **bash codex_postprocess.sh**
 
 
-### **`Step 6 | Predict CNVs using XHMM`**
-### **`Step 6A:`**
+### **`Step 4 | Predict CNVs using XHMM`**
+### **`Step 4A:`**
 Run the following script to extract the read depth information required by XHMM to make CNV predictions.
 > **bash xhmm_extract.sh**
 
-### **`Step 6B:`**
+### **`Step 4B:`**
 Run the following script to predict CNVs using XHMM.
 > **bash xhmm_call_CNVs.sh**
 
 
-### **`Step 7:`**
+### **`Step 5 | Measure the overlap among callers`**
 Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers used.
 
 > **bash calculate_CNV_overlap.sh**
 
 
-### **`Run either steps 8A & 8B together (Or) just step 8`**
+### **`Run either steps 6A & 6B together (Or) just step 6`**
 
-### **`Step 8A:`**
+### **`Step 6A | Extract basepair level coverage info`**
 Run generate_bp_coverage.sh to extract the basepair level coverage for each sample. Since this information can be extracted independently for each sample, make the necessary changes to this script to parallelize the process.
 
 > **bash generate_bp_coverage.sh**
 
-### **`Step 8B:`**
+### **`Step 6B | Resolve breakpoints`**
 Run merge_overlapping_CNVs_readdepth.sh to resolve breakpoint conflicts of concordant CNVs.
 
 > **bash merge_overlapping_CNVs_readdepth.sh**
 
 
 
-### **`Step 8:`**
+### **`Step 6 | Resolve breakpoints`**
 Run merge_overlapping_CNVs_endjoin.sh to resolve breakpoint conflicts of concordant CNVs.
 
 > **bash merge_overlapping_CNVs_endjoin.sh**
 
 
-### **`Step 9:`**
+### **`Step 7 | Extract GC content and mappability in breakpoint-resolved CNV regions`**
 Run extract_gc_map_vals.sh to extract GC content and mappability scores for singletons and breakpoint-resolved CNVs
 
 > **bash extract_gc_map_vals.sh**
 
-### **`Step 10:`**
+### **`Step 8 | Label CNVs based on gold-standard validations`**
 Run calc_valdata_overlap.sh to label the training data based on the overlap between CNVs in the training data and the “gold standard” validated CNVs. This script also reformats the CNVs in new samples (i.e., test data).
 
 > **bash calc_valdata_overlap.sh**
 
-### **`Step 11:`**
-Run the python script cn_learn.py directly with the required parameters
-
-
-> **python3 cn_learn.py [DATA_DIRECTORY] [TRAINING_DATA] [TEST_DATA] [CLASSIFIER_TYPE] [LOWER_SIZE_LIMIT] [UPPER_SIZE_LIMIT] [NUMBER_OF_TREES] [CALLER_COUNT] [CALLER_LIST]**
-
-> or
-
+### **`Step 9 | Classify CNVs`**
 Run cn_learn.sh to train CN-Learn and identify true CNVs in the test set. This script in turn invokes the python script cn_learn.py
 
 > **bash cn_learn.sh**
