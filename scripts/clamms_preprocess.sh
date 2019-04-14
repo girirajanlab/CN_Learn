@@ -14,7 +14,7 @@
 ########################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ####################################################
 # STEP 0: Declare variables, directories and files #
