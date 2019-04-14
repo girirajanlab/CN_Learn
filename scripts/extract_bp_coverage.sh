@@ -13,7 +13,7 @@
 ########################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ##################################################################
 # STEP 1: Calculate actual and normalized coverage for each sample 
@@ -23,7 +23,7 @@ do
 
 sample_name=`echo ${file_loc} | rev | cut -f1 -d/| rev`
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${BEDTOOLS_DIR}genomeCoverageBed -ibam ${file_loc} -bga \
                    > ${DATA_BPCOV_DIR}${sample_name}.bpcov.bed
 

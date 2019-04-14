@@ -20,7 +20,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -32,6 +32,20 @@ ALL_PRED_W_GC_MAP_TARG=${DATA_DIR}'final_preds_GC_Map_Targ.txt'
 if [ ! -f ${VAL_DATA_FILE} ];
 then
     echo "ERROR : The input file with the list of validated CNVs is unavailable.";
+    echo "Please place this file in the SOURCE directory and try again."
+    exit 1;
+fi
+
+if [ -f ${SAMPLE_LIST_TRAIN} ];
+then
+    echo "ERROR : The input file with the list of training samples is unavailable.";
+    echo "Please place this file in the SOURCE directory and try again."
+    exit 1;
+fi
+
+if [ -f ${SAMPLE_LIST_TEST} ];
+then
+    echo "ERROR : The input file with the list of testing samples is unavailable.";
     echo "Please place this file in the SOURCE directory and try again."
     exit 1;
 fi
@@ -54,12 +68,12 @@ cat ${VAL_DATA_FILE} | grep -w ${SAMPLE} | grep ${CNV_TYPE}  > ${VALD_DIR}${SAMP
 
 if [ -s ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt ] && [ -s ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt ];
 then 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${BEDTOOLS_DIR}intersectBed -wao -f ${VALDATA_OV_THRESHOLD} -a ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt   \
                        -b ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt >> ${DATA_DIR}overlap_w_valdata.txt;
 elif [ -s ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt ] && [ ! -s ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt ];
 then
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${BEDTOOLS_DIR}intersectBed -wao -f ${VALDATA_OV_THRESHOLD} -a ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt   \
                        -b ${SOURCE_DIR}dummy.bed >> ${DATA_DIR}overlap_w_valdata.txt;
 fi
@@ -83,11 +97,8 @@ done
 ##############################################################################################
 # STEP 3: Loop through the files to group predictions and append labels and prediction sizes #
 ##############################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 Rscript ${RSCRIPTS_DIR}consolidate_val_ov.r  ${DATA_DIR}  overlap_w_valdata.txt \
         test_data_temp.txt  training_data.txt  test_data.txt  ${CALLER_COUNT}  ${CALLER_LIST}
 
-
 echo "Job ended on `hostname` at `date`"
-
-

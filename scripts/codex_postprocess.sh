@@ -15,7 +15,7 @@
 ##################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 PROJ_NAME='cnlearn'
 CODEX_OUTPUT_FILE='codex_calls.txt'

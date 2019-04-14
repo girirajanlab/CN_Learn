@@ -17,7 +17,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -72,7 +72,7 @@ cat ${DATA_DIR}${CONS_PRED_W_OV_PROP_FILE_NAME} | grep -w ${sample} \
 # Extract the predictions for each sample and CNV type and group them #
 # based on their intervals.                                           #   
 #######################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 Rscript ${RSCRIPTS_DIR}generate_interval_combo.r ${PRED_DIR}  \
             ${sample}_${cnv_type}_preds.txt \
             ${sample}_${cnv_type}_preds_w_grps.txt  \
@@ -80,13 +80,13 @@ Rscript ${RSCRIPTS_DIR}generate_interval_combo.r ${PRED_DIR}  \
             ${sample}_${cnv_type}_preds_all_intvl_combos.txt  \
             ${CALLER_COUNT}  ${CALLER_LIST}
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${BEDTOOLS_DIR}intersectBed -wao \
             -a ${PRED_DIR}${sample}_${cnv_type}_preds_all_intvl_combos.txt \
             -b ${PRED_DIR}${TARGET_PROBES_W_LEN_ID} \
             > ${PRED_DIR}${sample}_${cnv_type}_preds_all_intvl_targs.txt
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 Rscript ${RSCRIPTS_DIR}identify_targets_of_interest.r  ${PRED_DIR} \
             ${sample}_${cnv_type}_preds_all_intvl_targs.txt  ${TARGET_PROBES_W_LEN_ID} \
             ${sample}_${cnv_type}_all_intvl_info.txt  \
@@ -120,13 +120,13 @@ cat ${PRED_DIR}${sample}_${cnv_type}_all_intvl_info.txt | \
 ################################################
 # Extract coverage for each target of interest #
 ################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${BEDTOOLS_DIR}intersectBed -wao \
             -a ${PRED_DIR}${sample}_${cnv_type}_targets_of_interest.txt \
             -b ${DATA_BPCOV_DIR}${sample}.bpcov.bed \
             > ${PRED_DIR}${sample}_${cnv_type}_targets_of_interest_w_cov.txt
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 Rscript ${RSCRIPTS_DIR}measure_rd_stats.r  ${PRED_DIR} \
             ${sample}_${cnv_type}_all_intvl_info_left_flank.txt  \
             ${sample}_${cnv_type}_all_intvl_info_pred_region.txt \

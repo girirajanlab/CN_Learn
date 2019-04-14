@@ -13,7 +13,7 @@
 ####################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ############################################
 # STEP 0: Declare variables and file names #
@@ -46,7 +46,7 @@ done
 ##############################################
 # STEP 2: Extract GC content for each interval
 ##############################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 java -Xmx2000m -Djava.io.tmpdir=${DATA_LOGS_DIR} \
                    -jar ${GATK_SW_DIR}GenomeAnalysisTK.jar \
                    -T GCContentByInterval -L ${TARGET_PROBES} \
@@ -56,7 +56,7 @@ java -Xmx2000m -Djava.io.tmpdir=${DATA_LOGS_DIR} \
 # STEP 3: Execute R script to merge data. This is needed because multicov command was executed 
 #         for just four samples via separate jobs, to parallalize data extraction manually.
 ##############################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 Rscript --vanilla ${RSCRIPTS_DIR}canoes_merge_files.r \
                       ${RSCRIPTS_DIR} ${DATA_CANOES_DIR} ${CONS_READS} canoes_calls.csv
 

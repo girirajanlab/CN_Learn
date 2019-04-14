@@ -18,7 +18,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -32,11 +32,10 @@ CONS_PRED_FILE=${DATA_DIR}${CONS_PRED_FILE_NAME}
 CONS_PRED_W_VAL_FILE=${DATA_DIR}${CONS_PRED_W_VALS_FILE_NAME}
 CONS_PRED_W_OV_FILE=${DATA_DIR}${CONS_PRED_W_OV_FILE_NAME}
 
-
 ###################################################################################
 # Step 0: Merge the input CNV call files from multiple callers into a single file #
 ###################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 Rscript --vanilla ${RSCRIPTS_DIR}merge_init_preds.r ${DATA_DIR} ${CONS_PRED_FILE_NAME}
 
 ################################################################################
@@ -124,14 +123,15 @@ cat ${CONS_PRED_FILE} | grep -w ${sample} | grep ${cnv_type} \
 if [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
    [ -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
                                      -b ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt \
                                      | cut -f1-6,12,13 >> ${DATA_DIR}${caller}_caller_ov.txt;
+
 elif [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
      [ ! -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
                                      -b ${SOURCE_DIR}dummy.bed | cut -f1-6,12,13 \
                                      >> ${DATA_DIR}${caller}_caller_ov.txt;
@@ -144,11 +144,10 @@ done
 ################################################################################
 # STEP 3: Run the R script to reshape the overlap info from rows to columns.   #
 ################################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  \
                                    ${DATA_DIR} ${CONS_PRED_W_OV_FILE_NAME} \
                                    ${CONS_PRED_W_OV_PROP_FILE_NAME} \
                                    ${CALLER_COUNT} ${CALLER_LIST}
-
 
 echo "Job ended on `hostname` at `date`"

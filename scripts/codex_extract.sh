@@ -17,13 +17,13 @@
 ####################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 PROJ_NAME='cnlearn'
 CODEX_OUTPUT_FILE='codex_calls.txt'
 
 for chr_num in {1..22};do
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 Rscript ${RSCRIPTS_DIR}codex.r ${chr_num} ${BAM_FILE_LIST_W_PATH} \
             ${BAM_FILE_LIST} ${TARGET_PROBES} ${PROJ_NAME} ${DATA_CODEX_DIR}
 done

@@ -14,10 +14,9 @@
 # (c) 2019 - Vijay Kumar                                           #
 # Licenced under the GNU General Public License 3.0.               #    
 ####################################################################
-
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ############################################
 # STEP 0: Declare variables and file names #
@@ -55,7 +54,7 @@ split_file_list=`ls list_of_bam_split* | tail -n+2 | tail -1`
 
 for split_file in ${split_file_list};
 do
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${BEDTOOLS_DIR}bedtools multicov -bams `cat ${DATA_CANOES_DIR}${split_file} \
                                      | tr "\n" " "` -bed ${TARGET_PROBES} -q 20 \
                          > ${DATA_CANOES_DIR}${CANOES_READS_FILE}_${split_file}

@@ -15,10 +15,9 @@
 # (c) 2019 - Vijay Kumar                                               #
 # Licenced under the GNU General Public License 3.0.                   #
 ########################################################################
-
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ################################################################################
 # STEP 0: Declare variables, directory locations and other required parameters #
@@ -31,7 +30,7 @@ sample_name=`echo ${bam_file} | rev | cut -f1 -d/ | rev`
 #############################################################################
 # STEP 1: Generate separate scripts to calculate read counts for each sample
 #############################################################################
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 java -Xmx3072m -Djava.io.tmpdir=${DATA_LOGS_DIR}xhmm -jar ${GATK_SW_DIR}GenomeAnalysisTK.jar \
          -T DepthOfCoverage -I ${bam_file} -L ${TARGET_PROBES} -R ${REF_GENOME} -dt BY_SAMPLE \
          -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable --minBaseQuality 0 \

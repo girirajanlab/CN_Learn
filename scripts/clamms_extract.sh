@@ -18,7 +18,7 @@
 ########################################################################
 echo "Job started on `hostname` at `date`"
 
-source /data/test_installation/CN_Learn/config.params
+source TBD/config.params
 
 ####################################################
 # STEP 0: Declare variables, directories and files #
@@ -34,12 +34,12 @@ do
 echo ${bam_file}
 sample_name=`echo ${bam_file} | rev | cut -f1 -d/ | rev`
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${SAMTOOLS_DIR}samtools bedcov -Q 30 ${DATA_CLAMMS_DIR}windows.bed ${bam_file} | \
                    awk '{ printf "%s\t%d\t%d\t%.6g\n", $1, $2, $3, $NF/($3-$2); }' \
                                      > ${DATA_CLAMMS_DIR}${sample_name}.coverage.bed
 
-docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \
+eval ${DOCKER_COMMAND}
 ${CLAMMS_DIR}normalize_coverage ${DATA_CLAMMS_DIR}${sample_name}.coverage.bed \
                                 ${DATA_CLAMMS_DIR}windows.bed \
                                 > ${DATA_CLAMMS_DIR}${sample_name}.norm.cov.bed

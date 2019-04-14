@@ -34,47 +34,54 @@ The complete list of preinstalled softwares can be found in the [Dockerfile](htt
 # Logistics
 Running CN-Learn to identify CNVs involves the following tasks,
 
-**1)** Clone the CN_Learn github repo to a local host LINUX machine using the following command,
+**1) Github:** Clone the CN_Learn github repo to a local host LINUX machine using the following command,
 
 > **git clone --recursive https://github.com/girirajanlab/CN_Learn.git** 
 
-**2)** Place all the BAM files, along with their corresponding index files in a local directory. Ensure the following,
+**2) BAM Files:** Place all the BAM files, along with their corresponding index files in a local directory. Ensure the following,
 
-	a) All bam files should be named <SAMPLE>.bam and the index file named <SAMPLE>.bam.bai, where <SAMPLE> is the name of the sample without any special characters in them.
+	a) All bam files should be named <SAMPLE>.bam and the index file named <SAMPLE>.bam.bai, where 
+    <SAMPLE> is the name of the sample without any special characters in them.
     
     b) All bam files must have an index file associated with them.
     
     c) The directory with .bam and .bam.bai files should not have any other type of files in them.
     
-**3)** Make sure the version of reference genome to which the samples were mapped to, is available in a local directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must be present in the same directory,
+**3) Reference Genome:** Make sure the version of reference genome to which the samples were mapped to, is available in a local directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must be present in the same directory,
    
     a) <REFERENCE_GENOME>.fasta.fai
     
     b) <REFERENCE_GENOME>.dict
 
-**4)** Name the file with the list of exome capture probes as **exome_capture_targets.bed** and place the file in the **/source/** directory inside the CN_Learn repository that was just cloned.
+**4) Exome capture probes:** Name the file with the list of exome capture probes as **exome_capture_targets.bed** and place the file in the **/source/** directory inside the CN_Learn repository that was just cloned.
 
-**5)** Update the following parameters in the config.params file in the CN_Learn directory that was just cloned;
+**5) List of validated CNVs:** Place the file named **validated_cnvs.txt** in the source directory.
+
+**6) config.params:** Update the following parameters in the config.params file in the CN_Learn directory that was just cloned;
 
 	a) BAM_FILE_DIR     : Replace 'TBD' with the full path of the directory with all the BAM files.
     
     b) REF_GENOME       : Replace 'TBD' with the full path of the directory with the reference genome.
     
-    c) DOCKER_INDICATOR : This parameter is set to 'Y' by default. If you choose NOT to use Docker and prefer to use locally installed softwares, update this parameter to 'N' prior to running rest of the steps. 
+    c) SW_DIR           : This path is set to the directory inside the Docker image. If you are NOT using 
+                          docker, update this path to the location of the directory in the local file system.
     
-    d) SW_DIR           : This path is set to the directory inside the Docker image. If you are NOT using docker, update this path to the location of the directory in the local file system.
+    d) DOCKER_INDICATOR : This parameter is set to 'Y' by default. If you choose NOT to use Docker and prefer 
+                          to use locally installed softwares, update this parameter to 'N' prior to running 
+                          rest of the steps. 
     
-**6)** If you decide to use docker, download the image using the following command,
+    
+**6) Docker:** If you decide to use docker, download the image using the following command,
 >**docker pull girirajanlab/cnlearn**
 
 Run the following command and make sure that it lists the recently downloaded image,
 > **docker images**
 
-**7)** Once all the input files are available, run the following script to ensure the presence, quality and consistency of the input BAM files, exome capture targets and the reference genome.
+**8) Prechecks:** Once all the input files are available, run the following script to ensure the presence, quality and consistency of the input BAM files, exome capture targets and the reference genome.
 
 > **bash prechecks.sh** 
 
-**8)** Once the prechecks.sh executes successfully without errors, follow the steps below to generate CNVs.
+**9)** Once the prechecks.sh executes successfully without errors, follow the steps below to generate CNVs.
 
 ## How to run CN-Learn?
 
@@ -140,7 +147,6 @@ Run generate_bp_coverage.sh to extract the basepair level coverage for each samp
 Run merge_overlapping_CNVs_readdepth.sh to resolve breakpoint conflicts of concordant CNVs.
 
 > **bash merge_overlapping_CNVs_readdepth.sh**
-
 
 
 ### **`Step 6 | Resolve breakpoints`**
