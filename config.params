@@ -28,7 +28,6 @@ DATA_DIR=${PROJ_DIR}'data/'
 ###################
 # 3) Subdirectories 
 ###################
-BAM_FILE_DIR=${PROJ_DIR}'bam_files/'
 RSCRIPTS_DIR=${SCRIPTS_DIR}'rscripts/'
 DATA_CANOES_DIR=${DATA_DIR}'canoes/'
 DATA_CODEX_DIR=${DATA_DIR}'codex/'

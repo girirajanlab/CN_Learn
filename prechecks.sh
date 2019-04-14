@@ -29,12 +29,12 @@ echo "Task started on `hostname` at `date`"
 #######################################################################
 CURRENT_DIR=`pwd`'/'
 
-sed -i 's|PROJ_DIR=TBD|PROJ_DIR=${CURRENT_DIR}|' ${CURRENT_DIR}config.params 
+sed -i "s|PROJ_DIR=TBD|PROJ_DIR=${CURRENT_DIR}|" ${CURRENT_DIR}config.params 
 echo "STATUS: PROJ_DIR path in the config.params file has been updated successfully."
 
 for script in `ls ${CURRENT_DIR}scripts/ | grep ".sh$"`; 
 do 
-sed -i 's|TBD/config.params|${CURRENT_DIR}config.params|' ${CURRENT_DIR}scripts/${script}
+sed -i "s|TBD/config.params|${CURRENT_DIR}config.params|" ${CURRENT_DIR}scripts/${script}
 done
 echo "STATUS: source path in all the bash scripts has been updated successfully."
 
