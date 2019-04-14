@@ -89,7 +89,7 @@ echo "Please make sure each bam file has an index file and rerun the script."
 exit 1
 
 else
-echo "STATUS: All the bam files have a corresponding index file associated with them."
+echo "STATUS: Each bam file has a corresponding index file associated with it."
 for bam_file in ${bam_list};
 do
 file_name_wc=`echo ${bam_file} | tr '.' ' ' | wc -w`
@@ -144,12 +144,16 @@ echo "directory. Please place the exome_capture_targets.bed file and rerun this 
 exit 1
 fi
 
+if [ ${DOCKER_INDICATOR} = 'Y' ];
+then
 docker_install_indicator=`command -v docker | wc -l`
 if [ ${docker_install_indicator} -eq 0 ];
 then
-echo "STATUS: Docker is NOT installed." 
+echo "ERROR: DOCKER_INDICATOR is set to 'Y', but Docker is NOT currently installed."
+echo "Please install Docker prior to executing any script that is part of CN-Learn." 
 else
 echo "STATUS: Docker is installed."
+fi
 fi
 
 echo "SUCCESS: All prechecks complete. Subsequent scripts can be now executed."

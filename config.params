@@ -34,7 +34,6 @@ DATA_CODEX_DIR=${DATA_DIR}'codex/'
 DATA_CLAMMS_DIR=${DATA_DIR}'clamms/'
 DATA_XHMM_DIR=${DATA_DIR}'xhmm/'
 DATA_BPCOV_DIR=${DATA_DIR}'bp_coverage_dir/'
-#DATA_BPCOV_DIR='/data/RF_Model_Revision/data/extract/bp_level_coverage/'
 DATA_LOGS_DIR=${DATA_DIR}'logs/'
 PRED_DIR=${DATA_DIR}'PRED_DIR/'
 VALD_DIR=${DATA_DIR}'VALD_DIR/'
@@ -52,7 +51,6 @@ XHMM_DIR=${SW_DIR}'xhmm/'
 ###############
 # 5) File Names
 ###############
-REF_GENOME=${SOURCE_DIR}'human_g1k_v37.fasta'
 ORIG_PROBES=${SOURCE_DIR}'exome_capture_targets.bed'
 TARGET_PROBE_FILE='targets_auto_no_chr.bed'
 TARGET_PROBES=${SOURCE_DIR}${TARGET_PROBE_FILE}
@@ -91,4 +89,3 @@ DOCKER_COMMAND='docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${
 else
 DOCKER_COMMAND=''
 fi
-
