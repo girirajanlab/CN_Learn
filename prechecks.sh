@@ -29,11 +29,14 @@ echo "Task started on `hostname` at `date`"
 #######################################################################
 CURRENT_DIR=`pwd`'/'
 
-sed -i "s|PROJ_DIR=TBD|PROJ_DIR=${CURRENT_DIR}|" ${CURRENT_DIR}config.params 
+sed -i 's|PROJ_DIR=TBD|PROJ_DIR=${CURRENT_DIR}|' ${CURRENT_DIR}config.params 
+echo "STATUS: PROJ_DIR path in the config.params file has been updated successfully."
+
 for script in `ls ${CURRENT_DIR}scripts/ | grep ".sh$"`; 
 do 
-sed -i "s|TBD/config.params|${CURRENT_DIR}config.params|" ${CURRENT_DIR}scripts/${script}
+sed -i 's|TBD/config.params|${CURRENT_DIR}config.params|' ${CURRENT_DIR}scripts/${script}
 done
+echo "STATUS: source path in all the bash scripts has been updated successfully."
 
 source ${CURRENT_DIR}config.params
 
@@ -42,7 +45,6 @@ source ${CURRENT_DIR}config.params
 #         config.params file and that the directory is not empty.       #
 #########################################################################
 REF_GENOME_PATH=`cat ${CURRENT_DIR}config.params | grep -w "REF_GENOME=TBD" | wc -w`
-TARGET_PROBE_FILE_PATH=`cat ${CURRENT_DIR}config.params | grep -w "TARGET_PROBE_FILE=TBD" | wc -w`
 BAM_FILE_PATH=`cat ${CURRENT_DIR}config.params | grep -w "BAM_FILE_DIR=TBD" | wc -w`
 
 if [ ${REF_GENOME_PATH} -ne 0 ];
@@ -51,6 +53,8 @@ echo "ERROR: The REF_GENOME variable is not updated in the config.params file in
 echo "${CURRENT_DIR}. Please update this variable with "
 echo "the absolute path of the directory hosting the reference genomes and rerun this script."
 exit 1
+else
+echo "STATUS: REF_GENOME file path has been updated"
 fi
 
 if [ ${BAM_FILE_PATH} -ne 0 ]; 
@@ -61,6 +65,7 @@ echo "the absolute path of the directory hosting the BAM files and rerun this sc
 exit 1
 
 else
+echo "STATUS: BAM_FILE_DIR file path has been updated"
 cd ${BAM_FILE_DIR}
 bam_list=`ls | grep ".bam$"`
 bam_count=`ls | grep ".bam$" | wc -l`
@@ -75,6 +80,7 @@ exit 1
 
 elif [ ${bam_count} -gt 0 ];
 then
+echo "STATUS: Input BAM files are available for processing"
 
 if [ ${bam_count} -ne ${bai_count} ];
 then
@@ -83,6 +89,7 @@ echo "Please make sure each bam file has an index file and rerun the script."
 exit 1
 
 else
+echo "STATUS: All the bam files have a corresponding index file associated with them."
 for bam_file in ${bam_list};
 do
 file_name_wc=`echo ${bam_file} | tr '.' ' ' | wc -w`
@@ -97,7 +104,7 @@ done
 ################################################################################
 # STEP 3: Generate the list of samples, bam files and bam files with full path #
 ################################################################################
-echo "Creating the required input files with the list of sample names"
+echo "STATUS: Creating the required input files with the list of sample names."
 cd ${BAM_FILE_DIR}
 ls | grep ".bam$" | sed -e 's/.bam//g'> ${SOURCE_DIR}'sample_list.txt'
 ls | grep ".bam$" | awk -v path=${BAM_FILE_DIR} '{print path$0}' > ${SOURCE_DIR}'bam_file_list_w_full_path.txt'
@@ -140,9 +147,9 @@ fi
 docker_install_indicator=`command -v docker | wc -l`
 if [ ${docker_install_indicator} -eq 0 ];
 then
-echo "Docker is NOT installed." 
+echo "STATUS: Docker is NOT installed." 
 else
-echo "Docker is installed."
+echo "STATUS: Docker is installed."
 fi
 
 echo "SUCCESS: All prechecks complete. Subsequent scripts can be now executed."
