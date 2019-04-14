@@ -12,7 +12,7 @@ bioRxiv 460931; doi: https://doi.org/10.1101/460931
 
 
 # Software Requirements
-Given the number of softwares/tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. Prior to running CN-Learn, Docker must installed on the host machine. Follow the steps provided in the [instructions](https://docs.docker.com/install/) page for the specific Linux distribution installed on the host machine. Once the installation is successful, the following command can be run to test the installation. If successful, the following command will return the current version of the docker installed on the host machine.
+Given the number of softwares/tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. If the user chooses to make use of Docker to run CN-Learn, Docker must first be installed on the host machine. Follow the steps provided in the [instructions](https://docs.docker.com/install/) page to install Docker for the specific Linux distribution installed on the host machine. Once the installation is successful, the following command can be run to test the installation. If successful, the following command will return the current version of the docker installed on the host machine.
 
 > **docker version**
 
@@ -38,7 +38,7 @@ Running CN-Learn to identify CNVs involves the following tasks,
 
 > **git clone --recursive https://github.com/girirajanlab/CN_Learn.git** 
 
-**2) BAM Files:** Place all the BAM files, along with their corresponding index files in a local directory. Ensure the following,
+**2) BAM files:** Place all the BAM files, along with their corresponding index files in a local directory. Ensure the following,
 
 	a) All bam files should be named <SAMPLE>.bam and the index file named <SAMPLE>.bam.bai, where 
     <SAMPLE> is the name of the sample without any special characters in them.
@@ -47,7 +47,7 @@ Running CN-Learn to identify CNVs involves the following tasks,
     
     c) The directory with .bam and .bam.bai files should not have any other type of files in them.
     
-**3) Reference Genome:** Make sure the version of reference genome to which the samples were mapped to, is available in a local directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must be present in the same directory,
+**3) Reference genome:** Make sure the version of reference genome to which the samples were mapped to, is available in a local directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must be present in the same directory,
    
     a) <REFERENCE_GENOME>.fasta.fai
     
