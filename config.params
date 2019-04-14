@@ -1,34 +1,47 @@
 ################################################################################
 # Script : config.params                                                       #
 # Author : Vijay Kumar                                                         #
-# Date   : 7/25/2018                                                           # 
+# Date   : 4/5/2019                                                            # 
 # This file is the master repository for the list of directories, files and    #
 # other global values and parameters used throughout the project. i.e., they   #
 # are shared across multiple scripts. The intent is to maintain such shared    #
 # variables in a single place and source this file within each bash scripts    #
 #                                                                              #
-# (c) 2018 - Vijay Kumar                                                       #
+# (c) 2019 - Vijay Kumar                                                       #
 # Licenced under the GNU General Public License 3.0.                           #
 ################################################################################
-# 1) Main Directories
+# 1) Paths that must be reviewed and/or updated prior to running CN-Learn
+#########################################################################
+BAM_FILE_DIR=${TBD}'bam_files/'
+REF_GENOME=${TBD}'human_g1k_v37.fasta'
+SW_DIR='/opt/tools/CN_Learn/software/'
+DOCKER_INDICATOR='Y'
+
+#####################
+# 2) Main Directories
 #####################
 PROJ_DIR=TBD
 SCRIPTS_DIR=${PROJ_DIR}'scripts/'
 SOURCE_DIR=${PROJ_DIR}'source/'
 DATA_DIR=${PROJ_DIR}'data/'
-SW_DIR=${PROJ_DIR}'software/'
-DATA_BPCOV_DIR=${DATA_DIR}'bp_coverage_dir/'
-DATA_BPCOV_DIR='/data2/RF_Model_SVIP/data/extract/bp_level_coverage/'
-BAM_FILE_DIR=${SOURCE_DIR}'bam_files/'
 
 ###################
-# 2) Subdirectories 
+# 3) Subdirectories 
 ###################
+BAM_FILE_DIR=${PROJ_DIR}'bam_files/'
+RSCRIPTS_DIR=${SCRIPTS_DIR}'rscripts/'
+DATA_CANOES_DIR=${DATA_DIR}'canoes/'
+DATA_CODEX_DIR=${DATA_DIR}'codex/'
+DATA_CLAMMS_DIR=${DATA_DIR}'clamms/'
+DATA_XHMM_DIR=${DATA_DIR}'xhmm/'
+DATA_BPCOV_DIR=${DATA_DIR}'bp_coverage_dir/'
+#DATA_BPCOV_DIR='/data/RF_Model_Revision/data/extract/bp_level_coverage/'
+DATA_LOGS_DIR=${DATA_DIR}'logs/'
 PRED_DIR=${DATA_DIR}'PRED_DIR/'
 VALD_DIR=${DATA_DIR}'VALD_DIR/'
 
 ###################
-# 3) Software Tools
+# 4) Software Tools
 ###################
 GATK_SW_DIR=${SW_DIR}'gatk-3.5/'
 BEDTOOLS_DIR=${SW_DIR}'bedtools2/bin/'
@@ -38,9 +51,14 @@ CLAMMS_DIR=${SW_DIR}'clamms/'
 XHMM_DIR=${SW_DIR}'xhmm/'
 
 ###############
-# 4) File Names
+# 5) File Names
 ###############
-REF_GENOME='/data/bx_references/GRCh37/human_g1k_v37.fasta'
+REF_GENOME=${SOURCE_DIR}'human_g1k_v37.fasta'
+ORIG_PROBES=${SOURCE_DIR}'exome_capture_targets.bed'
+TARGET_PROBE_FILE='targets_auto_no_chr.bed'
+TARGET_PROBES=${SOURCE_DIR}${TARGET_PROBE_FILE}
+BAM_FILE_LIST_W_PATH=${SOURCE_DIR}'bam_file_list_w_full_path.txt'
+BAM_FILE_LIST=${SOURCE_DIR}'bam_file_list.txt'
 SAMPLE_LIST=${SOURCE_DIR}'sample_list.txt'
 SAMPLE_LIST_TRAIN=${SOURCE_DIR}'sample_list_train.txt'
 SAMPLE_LIST_TEST=${SOURCE_DIR}'sample_list_test.txt'
@@ -48,7 +66,7 @@ TARGET_PROBES=${SOURCE_DIR}'targets_auto_no_chr.bed'
 VAL_DATA_FILE=${SOURCE_DIR}'validated_cnvs.txt'
 
 ################################
-# 5) Global Variables/Parameters
+# 6) Global Variables/Parameters
 ################################
 CALLER_LIST="CANOES CLAMMS CODEX XHMM"
 CALLER_COUNT=`echo ${CALLER_LIST} | wc -w`
@@ -56,9 +74,22 @@ CALLER_COUNT=`echo ${CALLER_LIST} | wc -w`
 # This threshold is used to label CNVs in training data as True Vs. False
 ##########################################################################
 VALDATA_OV_THRESHOLD=0.1
-################################################################################
-# The following parameter is used to choose the classifier to be built by 
+####################################################################################
+# The parameter 'CLASSIFIER' is used to choose the classifier to be built by 
 # CN-Learn. Default = RF (Random Forest) 
 # Other possible values = LR (Logistic Regression); SVM (Support Vector Machine)
-################################################################################
+# NUM_TREES can be changed to increase or decrease the number of trees in the forest
+####################################################################################
 CLASSIFIER='RF'
+NUM_TREES=100
+
+#################################################################
+# Set the docker command based on the indicator set by the user #
+#################################################################
+if [ ${DOCKER_INDICATOR} = 'Y' ];
+then
+DOCKER_COMMAND='docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \'
+else
+DOCKER_COMMAND=''
+fi
+

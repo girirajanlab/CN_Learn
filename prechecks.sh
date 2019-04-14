@@ -29,10 +29,10 @@ echo "Task started on `hostname` at `date`"
 #######################################################################
 CURRENT_DIR=`pwd`'/'
 
-sed -i 's|PROJ_DIR=TBD|PROJ_DIR=${CURRENT_DIR}|' ${CURRENT_DIR}config.params 
+sed -i "s|PROJ_DIR=TBD|PROJ_DIR=${CURRENT_DIR}|" ${CURRENT_DIR}config.params 
 for script in `ls ${CURRENT_DIR}scripts/ | grep ".sh$"`; 
 do 
-sed -i 's|TBD/config.params|${CURRENT_DIR}config.params|' ${CURRENT_DIR}scripts/${script}
+sed -i "s|TBD/config.params|${CURRENT_DIR}config.params|" ${CURRENT_DIR}scripts/${script}
 done
 
 source ${CURRENT_DIR}config.params
