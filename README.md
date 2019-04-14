@@ -53,7 +53,9 @@ Running CN-Learn to identify CNVs involves the following tasks,
     
     b) <REFERENCE_GENOME>.dict
 
-**4) Exome capture probes:** Name the file with the list of exome capture probes as **exome_capture_targets.bed** and place the file in the **/source/** directory inside the CN_Learn repository that was just cloned.
+**4) Exome capture probes:** Name the file with the list of exome capture probes as **exome_capture_targets.bed** and place the file in the **/source/** directory inside the CN_Learn repository that was just cloned. 
+
+**Important Note:** Make sure the file is **tab separated** with the first three columns being Chromosome, Start Position and End Position.
 
 **5) List of validated CNVs:** Place the file named **validated_cnvs.txt** in the source directory.
 
