@@ -63,14 +63,15 @@ Running CN-Learn to identify CNVs involves the following tasks,
 
 	a) BAM_FILE_DIR     : Replace 'TBD' with the full path of the directory with all the BAM files.
     
-    b) REF_GENOME       : Replace 'TBD' with the full path of the directory with the reference genome.
+    b) REF_GENOME       : Replace 'TBD' with the full path of the reference genome file. 
     
-    c) SW_DIR           : This path is set to the directory inside the Docker image. If you are NOT using 
-                          docker, update this path to the location of the directory in the local file system.
+    c) SW_DIR           : This path is set to the directory inside the Docker image. If you are NOT 
+                          using docker, update this path to the location of the directory in the 
+                          local file system.
     
-    d) DOCKER_INDICATOR : This parameter is set to 'Y' by default. If you choose NOT to use Docker and prefer 
-                          to use locally installed softwares, update this parameter to 'N' prior to running 
-                          rest of the steps. 
+    d) DOCKER_INDICATOR : This parameter is set to 'Y' by default. If you choose NOT to use Docker 
+                          and prefer to use locally installed softwares, update this parameter 
+                          to 'N' prior to running rest of the steps. 
     
     
 **6) Docker:** If you decide to use docker, download the image using the following command,
@@ -143,7 +144,7 @@ Run calculate_CNV_overlap.sh to measure the CNV overlap among all the callers us
 ### **`Step 6A | Extract basepair level coverage info`**
 Run generate_bp_coverage.sh to extract the basepair level coverage for each sample. Since this information can be extracted independently for each sample, make the necessary changes to this script to parallelize the process.
 
-> **bash extract_bp_coverage.sh**
+> **bash generate_bp_coverage.sh**
 
 ### **`Step 6B | Resolve breakpoints`**
 Run merge_overlapping_CNVs_readdepth.sh to resolve breakpoint conflicts of concordant CNVs.

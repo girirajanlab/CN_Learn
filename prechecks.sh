@@ -54,7 +54,16 @@ echo "${CURRENT_DIR}. Please update this variable with "
 echo "the absolute path of the directory hosting the reference genomes and rerun this script."
 exit 1
 else
-echo "STATUS: REF_GENOME file path has been updated"
+if [ ! -f ${REF_GENOME} ];
+then
+echo ${REF_GENOME} 
+echo "ERROR: The REF_GENOME_PATH variable does not seem to correspond to a valid file."
+echo "Please make sure that the file path to the reference genome in the config.params file "
+echo "is accurate and that the file exists and rerun this script."
+exit 1
+else
+echo "STATUS: REF_GENOME file path has been updated."
+fi
 fi
 
 if [ ${BAM_FILE_PATH} -ne 0 ]; 
@@ -65,6 +74,14 @@ echo "the absolute path of the directory hosting the BAM files and rerun this sc
 exit 1
 
 else
+if [ ! -d ${BAM_FILE_DIR} ];
+then
+echo "ERROR: The BAM_FILE_DIR variable does not seem to correspond to a working directory."
+echo "Please make sure that the path to the directory with the BAM files provided in the "
+echo "config.params file is accurate and that the directory exists and rerun this script."
+exit 1
+fi
+
 echo "STATUS: BAM_FILE_DIR file path has been updated"
 cd ${BAM_FILE_DIR}
 bam_list=`ls | grep ".bam$"`
@@ -80,7 +97,7 @@ exit 1
 
 elif [ ${bam_count} -gt 0 ];
 then
-echo "STATUS: Input BAM files are available for processing"
+echo "STATUS: Input BAM files are available for processing."
 
 if [ ${bam_count} -ne ${bai_count} ];
 then
