@@ -35,8 +35,7 @@ CONS_PRED_W_OV_FILE=${DATA_DIR}${CONS_PRED_W_OV_FILE_NAME}
 ###################################################################################
 # Step 0: Merge the input CNV call files from multiple callers into a single file #
 ###################################################################################
-eval ${DOCKER_COMMAND}
-Rscript --vanilla ${RSCRIPTS_DIR}merge_init_preds.r ${DATA_DIR} ${CONS_PRED_FILE_NAME}
+${DOCKER_COMMAND}Rscript --vanilla ${RSCRIPTS_DIR}merge_init_preds.r ${DATA_DIR} ${CONS_PRED_FILE_NAME}
 
 ################################################################################
 # Step 1: Make sure the data/format of the input file is consistent & accurate #
@@ -123,16 +122,14 @@ cat ${CONS_PRED_FILE} | grep -w ${sample} | grep ${cnv_type} \
 if [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
    [ -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then 
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
                                      -b ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt \
                                      | cut -f1-6,12,13 >> ${DATA_DIR}${caller}_caller_ov.txt;
 
 elif [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ] && \
      [ ! -s ${PRED_DIR}${caller}_complement_${sample}_${cnv_type}.txt ];
 then
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
                                      -b ${SOURCE_DIR}dummy.bed | cut -f1-6,12,13 \
                                      >> ${DATA_DIR}${caller}_caller_ov.txt;
 fi
@@ -144,8 +141,7 @@ done
 ################################################################################
 # STEP 3: Run the R script to reshape the overlap info from rows to columns.   #
 ################################################################################
-eval ${DOCKER_COMMAND}
-Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  \
+${DOCKER_COMMAND}Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  \
                                    ${DATA_DIR} ${CONS_PRED_W_OV_FILE_NAME} \
                                    ${CONS_PRED_W_OV_PROP_FILE_NAME} \
                                    ${CALLER_COUNT} ${CALLER_LIST}

@@ -17,6 +17,8 @@
 #    present in the source directory.                              #
 # 7) Remove 'CHR' from target probe list and generate a new file   #
 #    witn only the autosomes.                                      #
+# 8) Make sure the DOCKER_INDICATOR parameter is assigned valid    #
+#    values and that updated to SW_DIR align with DOCKER_INDICATOR.#
 #                        	                                   #
 # (c) 2019 - Vijay Kumar	                                   #
 # Licenced under the GNU General Public License 3.0.               #
@@ -28,6 +30,7 @@ echo "Task started on `hostname` at `date`"
 #         and update the absolute path in all the downloaded scripts. #
 #######################################################################
 CURRENT_DIR=`pwd`'/'
+source ${CURRENT_DIR}config.params
 
 sed -i "s|PROJ_DIR=TBD|PROJ_DIR=${CURRENT_DIR}|" ${CURRENT_DIR}config.params 
 echo "STATUS: PROJ_DIR path in the config.params file has been updated successfully."
@@ -37,8 +40,6 @@ do
 sed -i "s|TBD/config.params|${CURRENT_DIR}config.params|" ${CURRENT_DIR}scripts/${script}
 done
 echo "STATUS: source path in all the bash scripts has been updated successfully."
-
-source ${CURRENT_DIR}config.params
 
 #########################################################################
 # STEP 2: Make sure the directory path with BAM files is updated in the #
@@ -161,16 +162,36 @@ echo "directory. Please place the exome_capture_targets.bed file and rerun this 
 exit 1
 fi
 
-if [ ${DOCKER_INDICATOR} = 'Y' ];
+########################################################################
+# STEP 5: Make sure the software paths align with the Docker indicator #
+########################################################################
+if [ ${DOCKER_INDICATOR} = 'Y' ] || [ ${DOCKER_INDICATOR} = 'y' ]; 
 then
 docker_install_indicator=`command -v docker | wc -l`
-if [ ${docker_install_indicator} -eq 0 ];
+if [ ${docker_install_indicator} -eq 0 ]; 
 then
 echo "ERROR: DOCKER_INDICATOR is set to 'Y', but Docker is NOT currently installed."
 echo "Please install Docker prior to executing any script that is part of CN-Learn." 
 else
 echo "STATUS: Docker is installed."
 fi
+elif [ ${DOCKER_INDICATOR} = 'N' ] || [ ${DOCKER_INDICATOR} = 'n' ]; 
+then
+docker_path=`cat ${CURRENT_DIR}config.params | grep '/opt/tools/CN_Learn/software/' | wc -l`
+if [ ${docker_path} -ne 0 ]; 
+then
+echo "ERROR: The DOCKER_INDICATOR parameter is set to 'N', but the SW_DIR parameter in the "
+echo "config.params file has not been updated yet. It still points to the path inside the "
+echo "docker image. Please update this path and rerun this script."
+echo ""
+echo "NOTE: If not all softwares are installed in the same directory in the host, please review "
+echo "and update each of the six paths listed under '4) Software Tools' in the config.params file."
+exit 1
+fi
+else
+echo "The DOCKER_INDICATOR parameter can only take 'Y' or 'N' as its values. It appears that neither"
+echo "values were supplied. Please make sure that the value is set correctly and rerun this script."
+exit 1
 fi
 
 echo "SUCCESS: All prechecks complete. Subsequent scripts can be now executed."

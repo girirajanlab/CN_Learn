@@ -12,7 +12,7 @@ bioRxiv 460931; doi: https://doi.org/10.1101/460931
 
 
 # Software Requirements
-Given the number of softwares/tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. If the user chooses to make use of Docker to run CN-Learn, Docker must first be installed on the host machine. Follow the steps provided in the [instructions](https://docs.docker.com/install/) page to install Docker for the specific Linux distribution installed on the host machine. Once the installation is successful, the following command can be run to test the installation. If successful, the following command will return the current version of the docker installed on the host machine.
+Given the number of softwares/tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. If the user chooses to make use of Docker to run CN-Learn, [Docker](https://www.docker.com/) must first be installed on the host machine. Please follow the steps provided in the [instructions](https://docs.docker.com/install/) page to install Docker for the specific Linux distribution installed on the host machine. If the installation is successful, the following command will return the current version of docker installed on the host machine.
 
 > **docker version**
 
@@ -40,14 +40,14 @@ Running CN-Learn to identify CNVs involves the following tasks,
 
 **2) BAM files:** Place all the BAM files, along with their corresponding index files in a local directory. Ensure the following,
 
-	a) All bam files should be named <SAMPLE>.bam and the index file named <SAMPLE>.bam.bai, where 
-    <SAMPLE> is the name of the sample without any special characters in them.
+	a) All the bam files should be named <SAMPLE>.bam and the index file named <SAMPLE>.bam.bai, 
+    where <SAMPLE> is the name of the sample without any special characters in them.
     
-    b) All bam files must have an index file associated with them.
+    b) Each bam file must have an index file associated with it.
     
     c) The directory with .bam and .bam.bai files should not have any other type of files in them.
     
-**3) Reference genome:** Make sure the version of reference genome to which the samples were mapped to, is available in a local directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must be present in the same directory,
+**3) Reference genome:** Make sure that the version of reference genome to which the samples were mapped to, is available in a local directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must also be present in the same directory,
    
     a) <REFERENCE_GENOME>.fasta.fai
     
@@ -55,7 +55,7 @@ Running CN-Learn to identify CNVs involves the following tasks,
 
 **4) Exome capture probes:** Name the file with the list of exome capture probes as **exome_capture_targets.bed** and place the file in the **/source/** directory inside the CN_Learn repository that was just cloned. 
 
-**Important Note:** Make sure the file is **tab separated** with the first three columns being Chromosome, Start Position and End Position.
+**Important Note:** Make sure that the file is **tab separated** with the first three columns being Chromosome, Start Position and End Position.
 
 **5) List of validated CNVs:** Place the file named **validated_cnvs.txt** in the source directory.
 
@@ -66,11 +66,11 @@ Running CN-Learn to identify CNVs involves the following tasks,
     b) REF_GENOME       : Replace 'TBD' with the full path of the reference genome file. 
     
     c) SW_DIR           : This path is set to the directory inside the Docker image. If you are NOT 
-                          using docker, update this path to the location of the directory in the 
-                          local file system.
+                          using docker, please update this path to the location of the directory in 
+                          the local file system.
     
     d) DOCKER_INDICATOR : This parameter is set to 'Y' by default. If you choose NOT to use Docker 
-                          and prefer to use locally installed softwares, update this parameter 
+                          and prefer to use locally installed softwares, pelase update this parameter 
                           to 'N' prior to running rest of the steps. 
     
     

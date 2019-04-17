@@ -30,12 +30,11 @@ sample_name=`echo ${bam_file} | rev | cut -f1 -d/ | rev`
 #############################################################################
 # STEP 1: Generate separate scripts to calculate read counts for each sample
 #############################################################################
-eval ${DOCKER_COMMAND}
-java -Xmx3072m -Djava.io.tmpdir=${DATA_LOGS_DIR}xhmm -jar ${GATK_SW_DIR}GenomeAnalysisTK.jar \
-         -T DepthOfCoverage -I ${bam_file} -L ${TARGET_PROBES} -R ${REF_GENOME} -dt BY_SAMPLE \
-         -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable --minBaseQuality 0 \
-         --minMappingQuality 20 --start 1 --stop 5000 --nBins 200 --includeRefNSites \
-         --countType COUNT_FRAGMENTS -o ${DATA_XHMM_DIR}${sample_name}_GATK_OUT
+${DOCKER_COMMAND}java -Xmx3072m -Djava.io.tmpdir=${DATA_LOGS_DIR}xhmm -jar ${GATK_SW_DIR}GenomeAnalysisTK.jar \
+                      -T DepthOfCoverage -I ${bam_file} -L ${TARGET_PROBES} -R ${REF_GENOME} -dt BY_SAMPLE \
+                      -dcov 5000 -l INFO --omitDepthOutputAtEachBase --omitLocusTable --minBaseQuality 0 \
+                      --minMappingQuality 20 --start 1 --stop 5000 --nBins 200 --includeRefNSites \
+                      --countType COUNT_FRAGMENTS -o ${DATA_XHMM_DIR}${sample_name}_GATK_OUT
 
 done
 

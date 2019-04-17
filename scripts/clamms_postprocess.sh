@@ -36,8 +36,7 @@ do
     #grep "^Y" $FILE | awk '{ x += $4; n++; } END { if (x/(n+1) >= 0.1) print "M"; else print "F"; }'
 done > ${DATA_CLAMMS_DIR}/ref.panel.files.txt
 
-eval ${DOCKER_COMMAND}
-${CLAMMS_DIR}fit_models ${DATA_CLAMMS_DIR}ref.panel.files.txt ${DATA_CLAMMS_DIR}windows.bed \
+${DOCKER_COMMAND}${CLAMMS_DIR}fit_models ${DATA_CLAMMS_DIR}ref.panel.files.txt ${DATA_CLAMMS_DIR}windows.bed \
                                                                 > ${DATA_CLAMMS_DIR}models.bed
 
 #####################################################################################
@@ -47,8 +46,7 @@ cd ${DATA_CLAMMS_DIR}
 sample_name=${SAMPLE_LIST}
 for norm_cov_file in `ls *norm.cov.bed | grep -f ${sample_name}`;
 do 
-eval ${DOCKER_COMMAND}
-${CLAMMS_DIR}call_cnv ${DATA_CLAMMS_DIR}${norm_cov_file} ${DATA_CLAMMS_DIR}models.bed \
+${DOCKER_COMMAND}${CLAMMS_DIR}call_cnv ${DATA_CLAMMS_DIR}${norm_cov_file} ${DATA_CLAMMS_DIR}models.bed \
                                                        >> ${DATA_CLAMMS_DIR}clamms_cnvs.bed
 done
 

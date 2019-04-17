@@ -46,19 +46,17 @@ done
 ##############################################
 # STEP 2: Extract GC content for each interval
 ##############################################
-eval ${DOCKER_COMMAND}
-java -Xmx2000m -Djava.io.tmpdir=${DATA_LOGS_DIR} \
-                   -jar ${GATK_SW_DIR}GenomeAnalysisTK.jar \
-                   -T GCContentByInterval -L ${TARGET_PROBES} \
-                   -R ${REF_GENOME} -o ${DATA_CANOES_DIR}gc.txt
+${DOCKER_COMMAND}java -Xmx2000m -Djava.io.tmpdir=${DATA_LOGS_DIR} \
+                      -jar ${GATK_SW_DIR}GenomeAnalysisTK.jar \
+                      -T GCContentByInterval -L ${TARGET_PROBES} \
+                       -R ${REF_GENOME} -o ${DATA_CANOES_DIR}gc.txt
 
 ##############################################################################################
 # STEP 3: Execute R script to merge data. This is needed because multicov command was executed 
 #         for just four samples via separate jobs, to parallalize data extraction manually.
 ##############################################################################################
-eval ${DOCKER_COMMAND}
-Rscript --vanilla ${RSCRIPTS_DIR}canoes_merge_files.r \
-                      ${RSCRIPTS_DIR} ${DATA_CANOES_DIR} ${CONS_READS} canoes_calls.csv
+${DOCKER_COMMAND}Rscript --vanilla ${RSCRIPTS_DIR}canoes_merge_files.r \
+                                   ${RSCRIPTS_DIR} ${DATA_CANOES_DIR} ${CONS_READS} canoes_calls.csv
 
 ###############################################################
 # STEP 4: Copy the output files to the final output directory #

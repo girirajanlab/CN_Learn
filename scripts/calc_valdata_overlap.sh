@@ -68,14 +68,14 @@ cat ${VAL_DATA_FILE} | grep -w ${SAMPLE} | grep ${CNV_TYPE}  > ${VALD_DIR}${SAMP
 
 if [ -s ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt ] && [ -s ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt ];
 then 
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}intersectBed -wao -f ${VALDATA_OV_THRESHOLD} -a ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt   \
-                       -b ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt >> ${DATA_DIR}overlap_w_valdata.txt;
+${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -wao -f ${VALDATA_OV_THRESHOLD} -a ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt \
+                                                                             -b ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt \
+                                                                             >> ${DATA_DIR}overlap_w_valdata.txt;
 elif [ -s ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt ] && [ ! -s ${VALD_DIR}${SAMPLE}_${CNV_TYPE}.txt ];
 then
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}intersectBed -wao -f ${VALDATA_OV_THRESHOLD} -a ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt   \
-                       -b ${SOURCE_DIR}dummy.bed >> ${DATA_DIR}overlap_w_valdata.txt;
+${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -wao -f ${VALDATA_OV_THRESHOLD} -a ${PRED_DIR}${SAMPLE}_${CNV_TYPE}.txt \
+                                                                             -b ${SOURCE_DIR}dummy.bed \
+                                                                             >> ${DATA_DIR}overlap_w_valdata.txt;
 fi
 
 done
@@ -97,8 +97,7 @@ done
 ##############################################################################################
 # STEP 3: Loop through the files to group predictions and append labels and prediction sizes #
 ##############################################################################################
-eval ${DOCKER_COMMAND}
-Rscript ${RSCRIPTS_DIR}consolidate_val_ov.r  ${DATA_DIR}  overlap_w_valdata.txt \
+${DOCKER_COMMAND}Rscript ${RSCRIPTS_DIR}consolidate_val_ov.r  ${DATA_DIR}  overlap_w_valdata.txt \
         test_data_temp.txt  training_data.txt  test_data.txt  ${CALLER_COUNT}  ${CALLER_LIST}
 
 echo "Job ended on `hostname` at `date`"

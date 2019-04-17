@@ -23,9 +23,8 @@ PROJ_NAME='cnlearn'
 CODEX_OUTPUT_FILE='codex_calls.txt'
 
 for chr_num in {1..22};do
-eval ${DOCKER_COMMAND}
-Rscript ${RSCRIPTS_DIR}codex.r ${chr_num} ${BAM_FILE_LIST_W_PATH} \
-            ${BAM_FILE_LIST} ${TARGET_PROBES} ${PROJ_NAME} ${DATA_CODEX_DIR}
+${DOCKER_COMMAND}Rscript ${RSCRIPTS_DIR}codex.r ${chr_num} ${BAM_FILE_LIST_W_PATH} \
+                         ${BAM_FILE_LIST} ${TARGET_PROBES} ${PROJ_NAME} ${DATA_CODEX_DIR}
 done
 
 echo "Job ended on `hostname` at `date`"

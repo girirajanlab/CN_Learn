@@ -51,8 +51,7 @@ rd_ratio_col=$((${last_caller_col} + 3))
 gc_content_col=$((${rd_ratio_col} + 2))
 cnv_size_col=$((${gc_content_col} + 7))
 
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}bedtools nuc -fi ${REF_GENOME} -bed ${ALL_PRED_FILE} | tail -n +2 | \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}bedtools nuc -fi ${REF_GENOME} -bed ${ALL_PRED_FILE} | tail -n +2 | \
          cut -f1-${overlap_count_col},${rd_ratio_col},${gc_content_col},${cnv_size_col} > ${ALL_PRED_W_GC}
 
 ################################################################################
@@ -64,8 +63,7 @@ cat -n ${ALL_PRED_W_GC} | awk '{printf "%s\t%s\t%s\t%s\n", "chr"$2, $3, $4, $1}'
 ######################################################################################################
 # Extract only the mappability score column along with the unique identifier column; sort the output #
 ######################################################################################################
-eval ${DOCKER_COMMAND}
-${SW_DIR}bigWigAverageOverBed ${SOURCE_DIR}wgEncodeCrgMapabilityAlign100mer.bigWig \
+${DOCKER_COMMAND}${SW_DIR}bigWigAverageOverBed ${SOURCE_DIR}wgEncodeCrgMapabilityAlign100mer.bigWig \
                                   ${DATA_DIR}cons_pred_intvls_four_cols.bed ${DATA_DIR}map_output.tab
 
 cut -f1,6 ${DATA_DIR}map_output.tab | sort -k1 -n > ${DATA_DIR}sorted_map_scores
@@ -81,8 +79,7 @@ paste -d'\t' ${ALL_PRED_W_GC} ${DATA_DIR}sorted_map_scores | \
 # with each predicted CNV region. This is needed to ignore CNVs   #
 # that do not overlap with atleast one target probe.              #
 ###################################################################
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}intersectBed -c -a ${ALL_PRED_W_GC_MAP} -b ${TARGET_PROBES} \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -c -a ${ALL_PRED_W_GC_MAP} -b ${TARGET_PROBES} \
                                                    > ${ALL_PRED_W_GC_MAP_TARG}
 
 
@@ -94,8 +91,7 @@ cnv_size_col=$((${gc_content_col} + 7))
 ###########################################################
 # STEP 2 (End join): Extract GC content for each interval #
 ###########################################################
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}bedtools nuc -fi ${REF_GENOME} -bed ${ALL_PRED_FILE} | tail -n +2 | \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}bedtools nuc -fi ${REF_GENOME} -bed ${ALL_PRED_FILE} | tail -n +2 | \
          cut -f1-${overlap_count_col},${gc_content_col},${cnv_size_col} > ${ALL_PRED_W_GC}
 
 ################################################################################
@@ -107,8 +103,7 @@ cat -n ${ALL_PRED_W_GC} | awk '{printf "%s\t%s\t%s\t%s\n", "chr"$2, $3, $4, $1}'
 ######################################################################################################
 # Extract only the mappability score column along with the unique identifier column; sort the output #
 ######################################################################################################
-eval ${DOCKER_COMMAND}
-${SW_DIR}bigWigAverageOverBed ${SOURCE_DIR}wgEncodeCrgMapabilityAlign100mer.bigWig \
+${DOCKER_COMMAND}${SW_DIR}bigWigAverageOverBed ${SOURCE_DIR}wgEncodeCrgMapabilityAlign100mer.bigWig \
                                   ${DATA_DIR}cons_pred_intvls_four_cols.bed ${DATA_DIR}map_output.tab
 
 cut -f1,6 ${DATA_DIR}map_output.tab | sort -k1 -n > ${DATA_DIR}sorted_map_scores
@@ -124,8 +119,7 @@ paste -d'\t' ${ALL_PRED_W_GC} ${DATA_DIR}sorted_map_scores | \
 # with each predicted CNV region. This is needed to ignore CNVs   #
 # that do not overlap with atleast one target probe.              #
 ###################################################################
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}intersectBed -c -a ${ALL_PRED_W_GC_MAP} -b ${TARGET_PROBES} \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -c -a ${ALL_PRED_W_GC_MAP} -b ${TARGET_PROBES} \
                                                    > ${ALL_PRED_W_GC_MAP_TARG}
 
 fi

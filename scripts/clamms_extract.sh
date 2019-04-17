@@ -34,15 +34,13 @@ do
 echo ${bam_file}
 sample_name=`echo ${bam_file} | rev | cut -f1 -d/ | rev`
 
-eval ${DOCKER_COMMAND}
-${SAMTOOLS_DIR}samtools bedcov -Q 30 ${DATA_CLAMMS_DIR}windows.bed ${bam_file} | \
-                   awk '{ printf "%s\t%d\t%d\t%.6g\n", $1, $2, $3, $NF/($3-$2); }' \
-                                     > ${DATA_CLAMMS_DIR}${sample_name}.coverage.bed
+${DOCKER_COMMAND}${SAMTOOLS_DIR}samtools bedcov -Q 30 ${DATA_CLAMMS_DIR}windows.bed ${bam_file} | \
+                                  awk '{ printf "%s\t%d\t%d\t%.6g\n", $1, $2, $3, $NF/($3-$2); }' \
+                                                 > ${DATA_CLAMMS_DIR}${sample_name}.coverage.bed
 
-eval ${DOCKER_COMMAND}
-${CLAMMS_DIR}normalize_coverage ${DATA_CLAMMS_DIR}${sample_name}.coverage.bed \
-                                ${DATA_CLAMMS_DIR}windows.bed \
-                                > ${DATA_CLAMMS_DIR}${sample_name}.norm.cov.bed
+${DOCKER_COMMAND}${CLAMMS_DIR}normalize_coverage ${DATA_CLAMMS_DIR}${sample_name}.coverage.bed \
+                                                 ${DATA_CLAMMS_DIR}windows.bed \
+                                                 > ${DATA_CLAMMS_DIR}${sample_name}.norm.cov.bed
 done
 
 echo "Job ended on `hostname` at `date`"

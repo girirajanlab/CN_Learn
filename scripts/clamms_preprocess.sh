@@ -30,8 +30,7 @@ then
 wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/encodeDCC/wgEncodeMapability/wgEncodeCrgMapabilityAlign75mer.bigWig
 fi
 
-eval ${DOCKER_COMMAND}
-${SW_DIR}bigWigToWig ${SOURCE_DIR}wgEncodeCrgMapabilityAlign75mer.bigWig \
+${DOCKER_COMMAND}${SW_DIR}bigWigToWig ${SOURCE_DIR}wgEncodeCrgMapabilityAlign75mer.bigWig \
                                  ${SOURCE_DIR}wgEncodeCrgMapabilityAlign75mer.wig
 
 grep -v '^#' ${SOURCE_DIR}wgEncodeCrgMapabilityAlign75mer.wig | sed 's/^chr//g' | sort -k1,1 -k2,2n \
@@ -43,16 +42,14 @@ grep -v '^#' ${SOURCE_DIR}wgEncodeCrgMapabilityAlign75mer.wig | sed 's/^chr//g' 
 sort -k1,1 -k2,2n ${TARGET_PROBES} > ${DATA_CLAMMS_DIR}sorted_targets.bed
 sort -k1,1 -k2,2n ${DATA_CLAMMS_DIR}mappability.bed > ${DATA_CLAMMS_DIR}mappability_sorted.bed
 
-eval ${DOCKER_COMMAND}
-sort -k1,1 -k2,2n ${CLAMMS_DIR}data/clamms_special_regions.bed \
-             > ${DATA_CLAMMS_DIR}clamms_special_regions_sorted.bed
+${DOCKER_COMMAND}sort -k1,1 -k2,2n ${CLAMMS_DIR}data/clamms_special_regions.bed \
+                      > ${DATA_CLAMMS_DIR}clamms_special_regions_sorted.bed
 
 
 #accesses the special_regions.bed in CLAMMS
-eval ${DOCKER_COMMAND}
-${CLAMMS_DIR}annotate_windows.sh ${DATA_CLAMMS_DIR}sorted_targets.bed ${REF_GENOME} \
-                                     ${DATA_CLAMMS_DIR}mappability_sorted.bed $INSERT_SIZE \
-                                     ${DATA_CLAMMS_DIR}clamms_special_regions_sorted.bed \
-                                                     > ${DATA_CLAMMS_DIR}windows.bed
+${DOCKER_COMMAND}${CLAMMS_DIR}annotate_windows.sh ${DATA_CLAMMS_DIR}sorted_targets.bed ${REF_GENOME} \
+                                                  ${DATA_CLAMMS_DIR}mappability_sorted.bed $INSERT_SIZE \
+                                                  ${DATA_CLAMMS_DIR}clamms_special_regions_sorted.bed \
+                                                              > ${DATA_CLAMMS_DIR}windows.bed
 
 echo "Job ended on `hostname` at `date`"

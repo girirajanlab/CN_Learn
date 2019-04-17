@@ -54,10 +54,9 @@ split_file_list=`ls list_of_bam_split* | tail -n+2 | tail -1`
 
 for split_file in ${split_file_list};
 do
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}bedtools multicov -bams `cat ${DATA_CANOES_DIR}${split_file} \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}bedtools multicov -bams `cat ${DATA_CANOES_DIR}${split_file} \
                                      | tr "\n" " "` -bed ${TARGET_PROBES} -q 20 \
-                         > ${DATA_CANOES_DIR}${CANOES_READS_FILE}_${split_file}
+                                     > ${DATA_CANOES_DIR}${CANOES_READS_FILE}_${split_file}
 done
 
 echo "Job ended on `hostname` at `date`"

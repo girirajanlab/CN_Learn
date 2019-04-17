@@ -23,10 +23,8 @@ do
 
 sample_name=`echo ${file_loc} | rev | cut -f1 -d/| rev`
 
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}genomeCoverageBed -ibam ${file_loc} -bga \
-                   > ${DATA_BPCOV_DIR}${sample_name}.bpcov.bed
+${DOCKER_COMMAND}${BEDTOOLS_DIR}genomeCoverageBed -ibam ${file_loc} -bga \
+                             > ${DATA_BPCOV_DIR}${sample_name}.bpcov.bed
 done
 
 echo "Job ended on `hostname` at `date`"
-

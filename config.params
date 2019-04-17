@@ -83,9 +83,9 @@ NUM_TREES=100
 #################################################################
 # Set the docker command based on the indicator set by the user #
 #################################################################
-if [ ${DOCKER_INDICATOR} = 'Y' ];
+if [ ${DOCKER_INDICATOR} = 'Y' ] || [ ${DOCKER_INDICATOR} = 'y' ];
 then
-DOCKER_COMMAND='docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn \'
+DOCKER_COMMAND='docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn '
 else
 DOCKER_COMMAND=''
 fi

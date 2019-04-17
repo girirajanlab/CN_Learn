@@ -60,11 +60,10 @@ cat ${DATA_DIR}${CONS_PRED_W_OV_PROP_FILE_NAME} | grep -w ${sample} \
 ################################################################################################
 # Extract the predictions for each sample and CNV type and group them based on their intervals #
 ################################################################################################
-eval ${DOCKER_COMMAND}
-Rscript ${RSCRIPTS_DIR}generate_interval_combo.r  ${PRED_DIR} \
-            ${sample}_${cnv_type}_preds.txt \
-            ${sample}_${cnv_type}_preds_w_grps.txt  ${sample}_${cnv_type}_grouped_preds.txt \
-            ${sample}_${cnv_type}_preds_all_intvl_combos.txt  ${CALLER_COUNT}  ${CALLER_LIST}
+${DOCKER_COMMAND}Rscript ${RSCRIPTS_DIR}generate_interval_combo.r  ${PRED_DIR} \
+                         ${sample}_${cnv_type}_preds.txt \
+                         ${sample}_${cnv_type}_preds_w_grps.txt  ${sample}_${cnv_type}_grouped_preds.txt \
+                         ${sample}_${cnv_type}_preds_all_intvl_combos.txt  ${CALLER_COUNT}  ${CALLER_LIST}
 
 done
 done
@@ -131,9 +130,8 @@ do
 if [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
 then
 
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
-                                     -b ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
+                                                  -b ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
                                      | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
                                      | awk -v OFS='\t' '{if ($8 > 0) print $0;}' \
                                      >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
@@ -141,8 +139,7 @@ ${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.t
 elif [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ ! -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
 then
 
-eval ${DOCKER_COMMAND}
-${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
+${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
                                      -b ${SOURCE_DIR}dummy.bed \
                                      | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
                                      | awk -v OFS='\t' '{if ($8 > 0) print $0;}' \
@@ -153,8 +150,7 @@ done
 done
 done
 
-eval ${DOCKER_COMMAND}
-Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  ${DATA_DIR} \
+${DOCKER_COMMAND}Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r  ${DATA_DIR} \
                       ${DATA_DIR}CONSENSUS_caller_ov.txt  \
                       ${DATA_DIR}CONSENSUS_caller_ov_prop.txt \
                       ${CALLER_COUNT} ${CALLER_LIST}
