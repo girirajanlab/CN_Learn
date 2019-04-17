@@ -189,12 +189,12 @@ echo "and update each of the six paths listed under '4) Software Tools' in the c
 exit 1
 fi
 else
-echo "The DOCKER_INDICATOR parameter can only take 'Y' or 'N' as its values. It appears that neither"
-echo "values were supplied. Please make sure that the value is set correctly and rerun this script."
+echo "ERROR: The DOCKER_INDICATOR parameter can only take 'Y' or 'N' as its values. It appears "
+echo "that neither values were supplied. Please make sure that the value is set correctly and "
+echo "rerun this script."
 exit 1
 fi
 
 echo "SUCCESS: All prechecks complete. Subsequent scripts can be now executed."
-
 
 echo "Task ended on `hostname` at `date`"
