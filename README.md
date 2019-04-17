@@ -84,7 +84,7 @@ Run the following command and make sure that it lists the recently downloaded im
 
 > **bash prechecks.sh** 
 
-**9)** Once the prechecks.sh executes successfully without errors, follow the steps below to generate CNVs.
+**9)** Once prechecks.sh executes successfully without errors, follow the steps below to generate CNVs.
 
 ## How to run CN-Learn?
 
