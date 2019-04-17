@@ -20,13 +20,14 @@ Once docker is available, the image can then be downloaded and made instantly av
 
 >**docker pull girirajanlab/cnlearn**
 
-Following are some of the software tools preinstalled on the docker image,
+Following are some of the software tools preinstalled in the docker image,
 1) Python 3.7.3
 2) R 3.4.4
-3) GATK 3.5
-4) bedtools 2.27.1
-5) samtools 1.3.1
-6) CANOES, CODEX, CLAMMS, XHMM & CN-Learn
+3) Java 8
+4) GATK 3.5
+5) bedtools 2.27.1
+6) samtools 1.3.1
+7) CANOES, CODEX, CLAMMS, XHMM & CN-Learn
 
 The complete list of preinstalled softwares can be found in the [Dockerfile](https://github.com/girirajanlab/CN_Learn/blob/master/Dockerfile).
 
