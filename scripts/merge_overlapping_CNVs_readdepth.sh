@@ -17,7 +17,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source TBD/config.params
+source /data/test_installation/CN_Learn/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -37,7 +37,7 @@ then
     exit 1;
 fi
 
-for sample in `cat ${SAMPLE_LIST} | head -1`;
+for sample in `cat ${SAMPLE_LIST}`;
 do
     if [ ! -f ${DATA_BPCOV_DIR}${sample}.bpcov.bed ];
     then
@@ -57,7 +57,7 @@ cat ${TARGET_PROBES} | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $3-$2, NR}' \
 ################################################################################
 # STEP 2: Merge the overlapping calls made by multiple callers, in each sample #
 ################################################################################
-for sample in `cat ${SAMPLE_LIST} | head -1`;
+for sample in `cat ${SAMPLE_LIST}`;
 do
 
 ########################################################
@@ -167,7 +167,7 @@ touch ${DATA_DIR}final_preds.txt
 # STEP 4: Loop through each sample and CNV type to generate #
 #         four separate/consolidated output files.          #
 #############################################################
-for sample in `cat ${SAMPLE_LIST} | head -1`;
+for sample in `cat ${SAMPLE_LIST}`;
 do
 for cnv_type in "DEL" "DUP";
 do

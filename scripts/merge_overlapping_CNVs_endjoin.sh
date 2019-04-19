@@ -17,7 +17,7 @@
 ################################################################################
 echo "Job started on `hostname` at `date`"
 
-source TBD/config.params
+source /data/test_installation/CN_Learn/config.params
 
 ####################################################
 # STEP 0: Declare directories, files and variables #
@@ -46,7 +46,7 @@ cat ${TARGET_PROBES} | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $3-$2, NR}' \
 ################################################################################
 # STEP 2: Merge the overlapping calls made by multiple callers, in each sample #
 ################################################################################
-for sample in `cat ${SAMPLE_LIST} | head -1`;
+for sample in `cat ${SAMPLE_LIST}`;
 do
 
 ########################################################
@@ -90,7 +90,7 @@ touch ${DATA_DIR}extn_grouped_preds.txt
 # STEP 4: Loop through each sample and CNV type to generate #
 #         two separate/consolidated output files.           #
 #############################################################
-for sample in `cat ${SAMPLE_LIST} | head -1`;
+for sample in `cat ${SAMPLE_LIST}`;
 do
 for cnv_type in "DEL" "DUP";
 do
@@ -117,7 +117,11 @@ rm ${DATA_DIR}CONSENSUS_caller_ov.txt
 fi
 touch ${DATA_DIR}CONSENSUS_caller_ov.txt
 
-for sample in `cat ${SAMPLE_LIST} | head -1`;
+#########################################################################
+# STEP 5: Loop through each sample to measure the overlap for each call #
+#         with the consensus CNV obtained for regions with overlaps.    #
+#########################################################################
+for sample in `cat ${SAMPLE_LIST}`;
 do
 for cnv_type in "DUP" "DEL";
 do
@@ -126,6 +130,8 @@ cat ${DATA_DIR}extn_grouped_conc_preds.txt | grep -w ${sample} | grep ${cnv_type
 
 for caller in ${CALLER_LIST};
 do
+cat ${DATA_DIR}${CONS_PRED_W_OV_PROP_FILE_NAME} | grep -w ${caller} | grep -w ${sample} \
+    | grep ${cnv_type} > ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt
 
 if [ -s ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt ] && [ -s ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt ];
 then
@@ -155,8 +161,6 @@ ${DOCKER_COMMAND}Rscript --vanilla ${RSCRIPTS_DIR}reshape_caller_overlap_data.r 
                       ${DATA_DIR}CONSENSUS_caller_ov_prop.txt \
                       ${CALLER_COUNT} ${CALLER_LIST}
 
-
-echo ${col_after_conc_column}
 cut -f6,7   --complement ${DATA_DIR}CONSENSUS_caller_ov_prop.txt > ${DATA_DIR}final_preds.txt
 cut -f6,${col_after_conc_column}  --complement ${DATA_DIR}extn_grouped_nonconc_preds.txt >> ${DATA_DIR}final_preds.txt
 
