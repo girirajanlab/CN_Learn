@@ -5,9 +5,9 @@ While CN-Learn has been shown to perform best when built as a â€˜Random Forestâ€
 
 # Citation
 
-[A machine-learning approach for accurate detection of copy-number variants from exome sequencing](https://www.biorxiv.org/content/10.1101/460931v2)
+[A machine-learning approach for accurate detection of copy-number variants from exome sequencing](https://www.biorxiv.org/content/10.1101/460931v3)
 
-Vijay Kumar, Matthew Jensen, Gopal Jayakar, Neil Kelkar, Santhosh Girirajan
+Vijay Kumar Pounraja, Matthew Jensen, Gopal Jayakar, Neil Kelkar, Santhosh Girirajan
 bioRxiv 460931; doi: https://doi.org/10.1101/460931
 
 
@@ -48,7 +48,7 @@ Running CN-Learn to identify CNVs involves the following tasks,
     
     c) The directory with .bam and .bam.bai files should not have any other type of files in them.
     
-**3) Reference genome:** Make sure that the version of reference genome to which the samples were mapped to, is available in a local directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must also be present in the same directory,
+**3) Reference genome:** Make sure that the version of reference genome to which the samples were mapped to, is available in a **/source/** directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must also be present in the same directory,
    
     a) <REFERENCE_GENOME>.fasta.fai
     
@@ -197,4 +197,4 @@ The complete set of columns in the output file is listed below.
     along with CN-Learn.  If not, see <https://www.gnu.org/licenses/>.
 
 # Contact
-For questions or comments, please contact Vijay Kumar (vxm915@psu.edu), Matthew Jensen (mpj5142@psu.edu) or Santhosh Girirajan (sxg47@psu.edu).
+For questions or comments, please contact Vijay Kumar Pounraja (vxm915@psu.edu), Matthew Jensen (mpj5142@psu.edu) or Santhosh Girirajan (sxg47@psu.edu).

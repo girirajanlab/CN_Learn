@@ -24,27 +24,8 @@ source TBD/config.params
 CANOES_READS_FILE='canoes_reads'
 CONS_READS=${DATA_CANOES_DIR}'cons_canoes_reads' 
 
-NUM_OF_PROBES=`wc -l < ${TARGET_PROBES}`
-
-######################################################
-# STEP 1: Generate the file with the list of samples #
-######################################################
-echo 'SAMPLE' > ${DATA_CANOES_DIR}sample_seq
-num_samples=`cat ${BAM_FILE_LIST_W_PATH} | wc -l`
-for samp in $(seq 1 ${num_samples});
-do
-echo "S${samp}" >> ${DATA_CANOES_DIR}sample_seq
-done
-
-echo 'SAMPLE_NAME' > ${DATA_CANOES_DIR}sample_names
-cat ${SAMPLE_LIST} >> ${DATA_CANOES_DIR}sample_names
-paste -d , ${DATA_CANOES_DIR}sample_seq ${DATA_CANOES_DIR}sample_names \
-                             > ${DATA_CANOES_DIR}sample_map_canoes.csv
-
-cp ${DATA_CANOES_DIR}sample_map_canoes.csv ${DATA_DIR}sample_map_canoes.csv
-
 #######################################################################################
-# STEP 2: Extract Read Counts for each sample in a single step and submit separate jobs
+# STEP 1: Extract Read Counts for each sample in a single step and submit separate jobs
 #######################################################################################
 touch ${DATA_CANOES_DIR}${CANOES_READS_FILE}
 cd ${DATA_CANOES_DIR}

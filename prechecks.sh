@@ -125,15 +125,34 @@ done
 echo "STATUS: Creating the required input files with the list of sample names."
 cd ${BAM_FILE_DIR}
 ls | grep ".bam$" | sed -e 's/.bam//g'> ${SOURCE_DIR}'sample_list.txt'
-ls | grep ".bam$" | awk -v path=${BAM_FILE_DIR} '{print path$0}' > ${SOURCE_DIR}'bam_file_list_w_full_path.txt'
+ls | grep ".bam$" | awk -v path=${BAM_FILE_DIR} '{print path$0}' > ${BAM_FILE_LIST_W_PATH}
 ls | grep ".bam$" > ${SOURCE_DIR}'bam_file_list.txt'
 
 fi
 fi
 fi
 
+#####################################################################################
+# STEP 4: Generate the file with the list of samples required for the caller CANOES #
+#####################################################################################
+echo "STATUS: Creating the required input files with sample names for CANOES processing."
+echo 'SAMPLE' > ${DATA_CANOES_DIR}sample_seq
+num_samples=`cat ${BAM_FILE_LIST_W_PATH} | wc -l`
+for samp in $(seq 1 ${num_samples});
+do
+echo "S${samp}" >> ${DATA_CANOES_DIR}sample_seq
+done
+
+echo 'SAMPLE_NAME' > ${DATA_CANOES_DIR}sample_names
+cat ${SAMPLE_LIST} >> ${DATA_CANOES_DIR}sample_names
+paste -d , ${DATA_CANOES_DIR}sample_seq ${DATA_CANOES_DIR}sample_names \
+                             > ${DATA_CANOES_DIR}sample_map_canoes.csv
+
+cp ${DATA_CANOES_DIR}sample_map_canoes.csv ${DATA_DIR}sample_map_canoes.csv
+
+
 ################################################################
-# STEP 4: Create the file with the list of exome target probes
+# STEP 5: Create the file with the list of exome target probes
 ################################################################
 if [ -f ${ORIG_PROBES} ];
 then
@@ -163,7 +182,7 @@ exit 1
 fi
 
 ########################################################################
-# STEP 5: Make sure the software paths align with the Docker indicator #
+# STEP 6: Make sure the software paths align with the Docker indicator #
 ########################################################################
 if [ ${DOCKER_INDICATOR} = 'Y' ] || [ ${DOCKER_INDICATOR} = 'y' ]; 
 then
