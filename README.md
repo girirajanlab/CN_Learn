@@ -48,7 +48,7 @@ Running CN-Learn to identify CNVs involves the following tasks,
     
     c) The directory with .bam and .bam.bai files should not have any other type of files in them.
     
-**3) Reference genome:** Make sure that the version of reference genome to which the samples were mapped to, is available in a **/source/** directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must also be present in the same directory,
+**3) Reference genome:** Make sure that the version of reference genome to which the samples were mapped to, is available in the **/source/** directory, along with the index files. In addition to **<REFERENCE_GENOME>.fasta**, the following files must also be present in the same directory,
    
     a) <REFERENCE_GENOME>.fasta.fai
     
