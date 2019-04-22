@@ -28,7 +28,7 @@ export INSERT_SIZE=200
 ##################################################################
 # STEP 1: Calculate actual and normalized coverage for each sample 
 ##################################################################
-for bam_file in `cat ${BAM_FILE_LIST_W_PATH} | head -1`;
+for bam_file in `cat ${BAM_FILE_LIST_W_PATH}`;
 do
 
 echo ${bam_file}
