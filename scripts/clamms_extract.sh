@@ -25,6 +25,14 @@ source TBD/config.params
 ####################################################
 export INSERT_SIZE=200
 
+if [ ! -f ${DATA_CLAMMS_DIR}windows.bed ];
+then
+echo "ERROR: The input file windows.bed is not present in the directory ${DATA_CLAMMS_DIR}."
+echo "It is likely that the script clamms_preprocess.sh script has not been run yet. "
+echo "Please run clamms_preprocess.sh prior to running this script again."
+exit 1
+fi
+
 ##################################################################
 # STEP 1: Calculate actual and normalized coverage for each sample 
 ##################################################################
