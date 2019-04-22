@@ -50,7 +50,7 @@ touch ${DATA_CANOES_DIR}${CANOES_READS_FILE}
 cd ${DATA_CANOES_DIR}
 split -l 4 ${BAM_FILE_LIST_W_PATH} list_of_bam_split
 
-split_file_list=`ls list_of_bam_split* | tail -n+2 | tail -1`
+split_file_list=`ls list_of_bam_split*`
 
 for split_file in ${split_file_list};
 do
