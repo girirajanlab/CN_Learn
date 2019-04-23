@@ -104,7 +104,7 @@ done
 last_caller_column=$((6 + ${CALLER_COUNT}))
 concordance_column=$((${last_caller_column} + 1))
 col_after_conc_column=$((${concordance_column} + 1))
-
+ov_length_col=$((13 + ${CALLER_COUNT} + 1 + 1))
 
 awk -v OFS='\t' -v conc_col=${concordance_column} '{if ($conc_col != 1) print $1,$2,$3,$4,$5,"CONSENSUS";}' \
                                  ${DATA_DIR}extn_grouped_preds.txt  > ${DATA_DIR}extn_grouped_conc_preds.txt 
@@ -138,7 +138,7 @@ then
 
 ${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
                                                   -b ${PRED_DIR}${caller}_${sample}_${cnv_type}.txt \
-                                     | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
+                                     | cut -f1-6,12,${ov_length_col}  \
                                      | awk -v OFS='\t' '{if ($8 > 0) print $0;}' \
                                      >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
 
@@ -147,7 +147,7 @@ then
 
 ${DOCKER_COMMAND}${BEDTOOLS_DIR}intersectBed -wao -a ${PRED_DIR}CONSENSUS_${sample}_${cnv_type}.txt \
                                      -b ${SOURCE_DIR}dummy.bed \
-                                     | cut -f1-6,${col_after_conc_column},$((${col_after_conc_column} + 1)) \
+                                     | cut -f1-6,12,13 \
                                      | awk -v OFS='\t' '{if ($8 > 0) print $0;}' \
                                      >> ${DATA_DIR}CONSENSUS_caller_ov.txt;
 fi
