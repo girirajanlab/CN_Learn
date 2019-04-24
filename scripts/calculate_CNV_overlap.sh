@@ -49,14 +49,14 @@ then
 
     if [ ${cnv_type_1} != "DEL" ] || [ ${cnv_type_2} != "DUP" ];
     then
-        echo "ERROR : Only DUP and DEL are acceptable values for CNV type. 
-        Please check the fifth column in the input file for data integrity";
+        echo "ERROR : Only DUP and DEL are acceptable values for CNV type.";
+        echo "Please check the fifth column in the input file for data integrity.";
         exit 1;
     fi
 
 else
-    echo "ERROR : Only two types of CNVs can be analyzed. The input file has either 
-    more or less than two CNV types. Please check the input file for data integrity";
+    echo "ERROR : Only two types of CNVs can be analyzed. The input file has either";
+    echo "more or less than two CNV types. Please check the input file for data integrity.";
     exit 1;
 fi
 
@@ -72,21 +72,23 @@ then
         if [ ${caller} != ${caller_input} ];
         then
             echo "ERROR : Mismatch in the caller names between the input file and ";
-            echo "the names supplied in the config.params file ";
+            echo "the names supplied in the config.params file. Please double check ";
+            echo "the caller names supplied in the input files and rerun this script.";
             exit 1;
         fi
     let "caller_num+=1"
     done
 else
     echo "ERROR : Mismatch in the number of callers between the input file and ";
-    echo "the number of callers supplied in the config.params file ";
+    echo "the number of callers supplied in the config.params file. Please double ";
+    echo "check the list of callers in the input files and rerun this script.";
     exit 1;
 fi
 
 if [ ! -f ${SAMPLE_LIST} ];
 then
     echo "ERROR : The input file with the list of samples to process is unavailable.";
-    echo "Please ensure the presence of this file in the SOURCE directory and try again."
+    echo "Please ensure the presence of this file in the SOURCE directory and try again.";
     exit 1;
 fi
 

@@ -23,13 +23,14 @@ source /data/test_installation/CN_Learn/config.params
 # STEP 0: Declare directories, files and variables #
 ####################################################
 CONS_PRED_W_OV_PROP_FILE_NAME='cons_calls_w_caller_ov_prop.bed'
+CONS_PRED_W_OV_PROP_FILE=${DATA_DIR}'cons_calls_w_caller_ov_prop.bed'
 TARGET_PROBES_W_LEN_ID='targets_auto_no_chr_w_uniq_id.bed'
 ALL_PREDS_W_ALL_INTVL='preds_all_intvl_combos.txt'
 ALL_PREDS_W_ALL_INTVL_TARG='all_samples_all_intvls_w_targ.txt'
 
-##################################################################
-# STEP 1: Make sure the input files are available for processing #
-##################################################################
+###################################################################
+# STEP 1A: Make sure the input files are available for processing #
+###################################################################
 if [ ! -f ${TARGET_PROBES} ];
 then
     echo "ERROR : The input file with the list of exome capture probes is unavailable.";
@@ -47,6 +48,62 @@ do
         exit 1;
     fi
 done
+
+#################################################################################
+# Step 1B: Make sure the data/format of the input file is consistent & accurate #
+#################################################################################
+cnv_type_count=`cat ${CONS_PRED_W_OV_PROP_FILE} | cut -f4 | sort | uniq | wc -l`
+
+if [ ${cnv_type_count} -eq 2 ];
+then
+    cnv_type_1=`cat ${CONS_PRED_W_OV_PROP_FILE} | cut -f4 | sort | uniq | sort | head -1`
+    cnv_type_2=`cat ${CONS_PRED_W_OV_PROP_FILE} | cut -f4 | sort | uniq | sort | tail -1`
+
+    if [ ${cnv_type_1} != "DEL" ] || [ ${cnv_type_2} != "DUP" ];
+    then
+        echo "ERROR : Only DUP and DEL are acceptable values for CNV type.";
+        echo "Please check the fifth column in the input file for data integrity.";
+        exit 1;
+    fi
+
+else
+    echo "ERROR : Only two types of CNVs can be analyzed. The input file has either";
+    echo "more or less than two CNV types. Please check the input file for data integrity.";
+    exit 1;
+fi
+
+num_of_callers=`cat ${CONS_PRED_W_OV_PROP_FILE} | cut -f6 | sort | uniq | wc -l`
+caller_list_input=`cat ${CONS_PRED_W_OV_PROP_FILE} | cut -f6 | sort | uniq | sort`
+
+if [ ${num_of_callers} -eq ${CALLER_COUNT} ];
+then
+    caller_num=1
+    for caller in ${CALLER_LIST};
+    do
+        caller_input=`echo ${caller_list_input} | cut -d' ' -f${caller_num}`
+        if [ ${caller} != ${caller_input} ];
+        then
+            echo "ERROR : Mismatch in the caller names between the input file and ";
+            echo "the names supplied in the config.params file. Please double check ";
+            echo "the caller names supplied in the input files and rerun this script.";
+            exit 1;
+        fi
+    let "caller_num+=1"
+    done
+else
+    echo "ERROR : Mismatch in the number of callers between the input file and ";
+    echo "the number of callers supplied in the config.params file. Please double ";
+    echo "check the list of callers in the input files and rerun this script.";
+    exit 1;
+fi
+
+if [ ! -f ${SAMPLE_LIST} ];
+then
+    echo "ERROR : The input file with the list of samples to process is unavailable.";
+    echo "Please ensure the presence of this file in the SOURCE directory and try again.";
+    exit 1;
+fi
+
 
 ################################################################
 # Add a column with unique number for each exome capture probe #
