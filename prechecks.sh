@@ -30,7 +30,6 @@ echo "Task started on `hostname` at `date`"
 #         and update the absolute path in all the downloaded scripts. #
 #######################################################################
 CURRENT_DIR=`pwd`'/'
-source ${CURRENT_DIR}config.params
 
 sed -i "s|PROJ_DIR=TBD|PROJ_DIR=${CURRENT_DIR}|" ${CURRENT_DIR}config.params 
 echo "STATUS: PROJ_DIR path in the config.params file has been updated successfully."
@@ -45,6 +44,7 @@ echo "STATUS: source path in all the bash scripts has been updated successfully.
 # STEP 2: Make sure the directory path with BAM files is updated in the #
 #         config.params file and that the directory is not empty.       #
 #########################################################################
+source ${CURRENT_DIR}config.params
 REF_GENOME_PATH=`cat ${CURRENT_DIR}config.params | grep -w "REF_GENOME=TBD" | wc -w`
 BAM_FILE_PATH=`cat ${CURRENT_DIR}config.params | grep -w "BAM_FILE_DIR=TBD" | wc -w`
 
