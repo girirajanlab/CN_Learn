@@ -25,7 +25,7 @@ source TBD/config.params
 for bam_file in `cat ${BAM_FILE_LIST_W_PATH}`;
 do
 
-sample_name=`echo ${bam_file} | rev | cut -f1 -d/ | rev`
+sample_name=`basename ${bam_file}`
 
 #############################################################################
 # STEP 1: Generate separate scripts to calculate read counts for each sample

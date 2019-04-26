@@ -40,7 +40,7 @@ for bam_file in `cat ${BAM_FILE_LIST_W_PATH}`;
 do
 
 echo ${bam_file}
-sample_name=`echo ${bam_file} | rev | cut -f1 -d/ | rev`
+sample_name=`basename ${bam_file}`
 
 ${DOCKER_COMMAND}${SAMTOOLS_DIR}samtools bedcov -Q 30 ${DATA_CLAMMS_DIR}windows.bed ${bam_file} | \
                                   awk '{ printf "%s\t%d\t%d\t%.6g\n", $1, $2, $3, $NF/($3-$2); }' \

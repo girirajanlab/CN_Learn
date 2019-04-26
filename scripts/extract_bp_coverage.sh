@@ -21,7 +21,7 @@ source TBD/config.params
 for file_loc in `cat ${BAM_FILE_LIST_W_PATH}`;
 do
 
-sample_name=`echo ${file_loc} | rev | cut -f1 -d/| rev | sed s'/.bam$//'`
+sample_name=`basename ${file_loc} | sed s'/.bam$//'`
 
 ${DOCKER_COMMAND}${BEDTOOLS_DIR}genomeCoverageBed -ibam ${file_loc} -bga \
                              > ${DATA_BPCOV_DIR}${sample_name}.bpcov.bed
