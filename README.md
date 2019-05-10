@@ -10,6 +10,13 @@ While CN-Learn has been shown to perform best when built as a â€˜Random Forestâ€
 Vijay Kumar Pounraja, Matthew Jensen, Gopal Jayakar, Neil Kelkar, Santhosh Girirajan
 bioRxiv 460931; doi: https://doi.org/10.1101/460931
 
+## Change Log
+### 5/10/2019 : 
+
+1) Fixed an issue that failed to mount the reference genome to the docker image.
+2) Automated the generation of the input files with the list of training and test samples from the file with validated CNvs.
+3) Added additional file and sample name integrity checks prior to labeling CNVs for training and learning.
+4) Updated this instruction page.
 
 # Software Requirements
 Given the number of softwares/tools required to run the four individual CNV calling algorithms prior to running CN-Learn, every software/tool required to run CN-Learn end-to-end has been packaged into a Docker image. If the user chooses to make use of Docker to run CN-Learn, [Docker](https://www.docker.com/) must first be installed on the host machine. Please follow the steps provided in the [instructions](https://docs.docker.com/install/) page to install Docker for the specific Linux distribution installed on the host machine. If the installation is successful, the following command will return the current version of docker installed on the host machine.
@@ -58,11 +65,13 @@ Running CN-Learn to identify CNVs involves the following tasks,
 
 **Important Note:** Make sure that the file is **tab separated** with the first three columns being Chromosome, Start Position and End Position.
 
-**5) List of validated CNVs:** Place the file named **validated_cnvs.txt** in the source directory.
+**5) List of validated CNVs:** Place the file named **validated_cnvs.txt** in the source directory. This file is expected to be tab separated with the following six columns (without any headers),
+
+>**CHR	START	END	CNV_TYPE	CNV_SIZE	SAMPLE_NAME**
 
 **6) config.params:** Update the following parameters in the config.params file in the CN_Learn directory that was just cloned;
 
-	a) BAM_FILE_DIR     : Replace 'TBD' with the full path of the directory with all the BAM files.
+    a) BAM_FILE_DIR     : Replace 'TBD' with the full path of the directory with all the BAM files.
     
     b) REF_GENOME       : Replace 'TBD' with the full path of the reference genome file. 
     
