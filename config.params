@@ -24,6 +24,7 @@ PROJ_DIR=TBD
 SCRIPTS_DIR=${PROJ_DIR}'scripts/'
 SOURCE_DIR=${PROJ_DIR}'source/'
 DATA_DIR=${PROJ_DIR}'data/'
+REF_GENOME_DIR=`dirname ${REF_GENOME}`
 
 ###################
 # 3) Subdirectories 
@@ -85,7 +86,8 @@ NUM_TREES=100
 #################################################################
 if [ ${DOCKER_INDICATOR} = 'Y' ] || [ ${DOCKER_INDICATOR} = 'y' ];
 then
-DOCKER_COMMAND="docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn "
+DOCKER_COMMAND="docker run --rm -v ${PROJ_DIR}:${PROJ_DIR} -v ${BAM_FILE_DIR}:${BAM_FILE_DIR} -v ${REF_GENOME_DIR}:${REF_GENOME_DIR} --user $(id -u):$(id -g) girirajanlab/cnlearn "
 else
 DOCKER_COMMAND=''
 fi
+
