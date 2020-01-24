@@ -65,7 +65,7 @@ cat ${DATA_XHMM_DIR}locus_complexity.txt | awk '{if ($4 > 0.25) print $1 ":" $2 
 
 #################################################################
 # STEP 6: Filter samples by GC content/low complexity, and then # 
-          find mean-center of targets. Use default parameters.  #
+#         find mean-center of targets. Use default parameters.  #
 #################################################################
 ${DOCKER_COMMAND}${XHMM_DIR}xhmm --matrix -r ${DATA_XHMM_DIR}combined_RD.txt --centerData --centerType \
                                    target -o ${DATA_XHMM_DIR}centered_RD.txt --outputExcludedTargets \
