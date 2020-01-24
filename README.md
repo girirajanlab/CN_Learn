@@ -69,6 +69,8 @@ Running CN-Learn to identify CNVs involves the following tasks,
 
 >**CHR	START	END	CNV_TYPE	CNV_SIZE	SAMPLE_NAME**
 
+Note: CNV_TYPE can only consider either 'DUP' or 'DEL' as valid input values.
+
 **6) config.params:** Update the following parameters in the config.params file in the CN_Learn directory that was just cloned;
 
     a) BAM_FILE_DIR     : Replace 'TBD' with the full path of the directory with all the BAM files.
